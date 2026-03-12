@@ -24,6 +24,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
+// ── Named routes so /portal works (not just /portal.html) ──
+app.get('/portal', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/portal.html'));
+});
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 // ── Rate limiters — keyed by PHONE NUMBER not IP ───────
 // This means each person's phone can only send 3 OTPs
 // per 5 min, but different people are NOT blocked together

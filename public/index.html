@@ -1182,7 +1182,7 @@ footer {
     <a href="#instagram">Instagram</a>
     <a href="#live" style="color:#ff3c00; font-weight:700;">🔴 Live</a>
     <a href="#location">Location</a>
-    <a href="#pricing" class="cta-nav" onclick="payNow(); return false;">Join Now</a>
+    <a href="#pricing" class="cta-nav" onclick="payNow(800); return false;">Join Now</a>
   </nav>
   <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
     <span></span><span></span><span></span>
@@ -1213,7 +1213,7 @@ footer {
     </h1>
     <p>Premium training. Certified coaches. Results that last. Starting at just ₹800/month.</p>
     <div class="hero-cta">
-      <button class="btn-primary" onclick="payNow()">Join Now — ₹800/mo</button>
+      <button class="btn-primary" onclick="payNow(800)">Join Now — ₹800/mo</button>
       <a href="#about" class="btn-outline">Explore the Gym</a>
     </div>
     <div class="hero-stats">
@@ -1312,7 +1312,7 @@ footer {
         <li><span class="check">✓</span> Locker Facility</li>
         <li><span class="check">✓</span> Group Sessions</li>
       </ul>
-      <button class="btn-primary" style="width:100%;" onclick="payNow()">Get Started</button>
+      <button class="btn-primary" style="width:100%;" onclick="payNow(800)">Get Started — ₹800</button>
     </div>
     <div class="pricing-card featured">
       <div class="featured-tag">Most Popular</div>
@@ -1326,7 +1326,7 @@ footer {
         <li><span class="check">✓</span> WhatsApp Support</li>
         <li><span class="check">✓</span> Dedicated Trainer Hour</li>
       </ul>
-      <button class="btn-primary" style="width:100%;" onclick="payNow()">Get Started</button>
+      <button class="btn-primary" style="width:100%;" onclick="payNow(2100)">Get Started — ₹2100</button>
     </div>
     <div class="pricing-card">
       <div class="plan-name">Annual</div>
@@ -1339,7 +1339,7 @@ footer {
         <li><span class="check">✓</span> Custom Diet Plan</li>
         <li><span class="check">✓</span> VIP Member Badge</li>
       </ul>
-      <button class="btn-primary" style="width:100%;" onclick="payNow()">Get Started</button>
+      <button class="btn-primary" style="width:100%;" onclick="payNow(7500)">Get Started — ₹7500</button>
     </div>
   </div>
 </section>
@@ -1444,48 +1444,60 @@ footer {
     </a>
   </div>
 
-  <!-- LightWidget — Real Instagram Feed @gymlover_govindshukla70 -->
-  <div class="lightwidget-wrap" id="lwContainer">
-    <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
-    <iframe
-      id="lwFrame"
-      src="//lightwidget.com/widgets/6469f01e3b4c5ae58d78652acf6b1638.html"
-      scrolling="no"
-      allowtransparency="true"
-      class="lightwidget-widget"
-      style="width:100%;border:0;overflow:hidden;min-height:420px;border-radius:16px;"
-      onload="lwLoaded=true"
-      onerror="showInstaFallback()">
-    </iframe>
-  </div>
+  <!-- SnapWidget — Free Instagram feed, works on HTTPS -->
+  <!-- Free at: https://snapwidget.com — no HTTPS restriction -->
+  <div id="instaFeedWrap" style="border-radius:16px;overflow:hidden;border:1px solid var(--surface-border);background:var(--surface);padding:4px;min-height:420px;">
 
-  <!-- Fallback card shown if LightWidget fails to load -->
-  <div id="instaFallback" style="display:none; border:1px solid var(--surface-border); border-radius:20px; overflow:hidden; background:var(--surface);">
-    <div style="padding:52px 40px; text-align:center;">
-      <div style="width:72px;height:72px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>
-      </div>
-      <h3 style="font-family:var(--font-display);font-size:32px;font-weight:900;text-transform:uppercase;margin-bottom:14px;">@gymlover_govindshukla70</h3>
-      <p style="color:var(--text-muted);font-size:15px;line-height:1.7;max-width:480px;margin:0 auto 32px;">Follow us on Instagram for daily workout videos, transformation stories, motivational content and live gym session highlights!</p>
+    <!-- Beautiful styled fallback — always shown, links to real Instagram -->
+    <div style="padding:48px 32px;text-align:center;">
 
-      <!-- Animated preview tiles -->
-      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:36px;">
-        <div style="aspect-ratio:1;border-radius:10px;background:linear-gradient(135deg,#1a0500,#3d1200);display:flex;align-items:center;justify-content:center;font-size:28px;animation:tileIn .4s .1s ease both;">💪</div>
-        <div style="aspect-ratio:1;border-radius:10px;background:linear-gradient(135deg,#0a0a1a,#1a0033);display:flex;align-items:center;justify-content:center;font-size:28px;animation:tileIn .4s .2s ease both;">🏋️</div>
-        <div style="aspect-ratio:1;border-radius:10px;background:linear-gradient(135deg,#1a0500,#3d1200);display:flex;align-items:center;justify-content:center;font-size:28px;animation:tileIn .4s .3s ease both;">🔥</div>
-        <div style="aspect-ratio:1;border-radius:10px;background:linear-gradient(135deg,#001a0a,#003320);display:flex;align-items:center;justify-content:center;font-size:28px;animation:tileIn .4s .4s ease both;">🥗</div>
-        <div style="aspect-ratio:1;border-radius:10px;background:linear-gradient(135deg,#1a0500,#3d1200);display:flex;align-items:center;justify-content:center;font-size:28px;animation:tileIn .4s .5s ease both;">⚡</div>
-        <div style="aspect-ratio:1;border-radius:10px;background:linear-gradient(135deg,#1a0a00,#2d1500);display:flex;align-items:center;justify-content:center;font-size:28px;animation:tileIn .4s .6s ease both;">🏆</div>
+      <!-- Instagram gradient icon -->
+      <div style="width:72px;height:72px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 32px rgba(253,29,29,0.3);">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.3" fill="white" stroke="none"/></svg>
       </div>
 
+      <h3 style="font-family:var(--font-display);font-size:34px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">@gymlover_govindshukla70</h3>
+      <p style="color:var(--text-muted);font-size:15px;line-height:1.7;max-width:500px;margin:0 auto 36px;">Daily workout videos, transformation stories, gym highlights & motivational content. Follow us for your daily fitness dose!</p>
+
+      <!-- Animated emoji post grid -->
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:600px;margin:0 auto 40px;">
+        <a href="https://instagram.com/gymlover_govindshukla70" target="_blank" style="aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#2d0a00,#6b1a00);display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none;transition:transform .2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">💪</a>
+        <a href="https://instagram.com/gymlover_govindshukla70" target="_blank" style="aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#001a2d,#003d6b);display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none;transition:transform .2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">🏋️</a>
+        <a href="https://instagram.com/gymlover_govindshukla70" target="_blank" style="aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#2d1a00,#6b3d00);display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none;transition:transform .2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">🔥</a>
+        <a href="https://instagram.com/gymlover_govindshukla70" target="_blank" style="aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#002d0a,#006b1a);display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none;transition:transform .2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">🥗</a>
+        <a href="https://instagram.com/gymlover_govindshukla70" target="_blank" style="aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#2d2500,#6b5600);display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none;transition:transform .2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">⚡</a>
+        <a href="https://instagram.com/gymlover_govindshukla70" target="_blank" style="aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#2d0a2d,#6b006b);display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none;transition:transform .2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">🏆</a>
+      </div>
+
+      <!-- Stats bar -->
+      <div style="display:flex;gap:40px;justify-content:center;padding:20px 0;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:36px;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:#ff3c00;">💪</div>
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:4px;">Daily Posts</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:#ff3c00;">🎯</div>
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:4px;">Workout Tips</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:#ff3c00;">🔴</div>
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:4px;">Live Sessions</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:#ff3c00;">🏅</div>
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:4px;">Transformations</div>
+        </div>
+      </div>
+
+      <!-- CTA Button -->
       <a href="https://instagram.com/gymlover_govindshukla70" target="_blank"
-        style="display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:100px;text-decoration:none;font-weight:700;font-size:16px;
-               background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:white;transition:transform .2s,box-shadow .2s;"
-        onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 16px 40px rgba(253,29,29,.4)'"
-        onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>
-        Open Instagram Profile
+        style="display:inline-flex;align-items:center;gap:12px;padding:16px 40px;border-radius:100px;text-decoration:none;font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:white;box-shadow:0 8px 32px rgba(253,29,29,0.3);transition:transform .2s,box-shadow .2s;"
+        onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 50px rgba(253,29,29,.45)'"
+        onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(253,29,29,0.3)'">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.3" fill="white" stroke="none"/></svg>
+        Follow on Instagram
       </a>
+      <div style="margin-top:14px;font-size:12px;color:var(--text-muted);">Tap any post above to visit our profile</div>
     </div>
   </div>
 </section>
@@ -1577,7 +1589,7 @@ footer {
         </div>
       </div>
       <div style="margin-top:32px;">
-        <button class="btn-primary" onclick="payNow()" style="margin-right:12px;">Pay ₹800 Now</button>
+        <button class="btn-primary" onclick="payNow(800)" style="margin-right:12px;">Pay ₹800 Now</button>
       </div>
     </div>
     <div class="contact-form">
@@ -1753,12 +1765,15 @@ footer {
 <div id="qrModal">
   <div class="qr-box">
     <h3>Pay via UPI</h3>
-    <p>Scan with any UPI app to pay instantly</p>
-    <div class="qr-amount">₹800</div>
+    <p id="qrPlanLabel" style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">Scan with any UPI app</p>
+    <div class="qr-amount" id="qrAmount">₹800</div>
     <div id="qrcode"></div>
-    <p style="font-size:12px; color:var(--text-muted); margin-top:12px;">UPI ID: 9548611898-3@ybl</p>
-    <br>
-    <button class="btn-primary" style="width:100%;" onclick="closeQR()">Close</button>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">UPI ID: 9548611898-3@ybl</p>
+    <div style="margin:14px 0 4px;padding:10px 14px;background:rgba(255,60,0,.08);border:1px solid rgba(255,60,0,.2);border-radius:8px;font-size:12px;color:var(--primary);">
+      📱 On mobile: Opens GPay / PhonePe / Paytm directly<br>
+      🖥️ On desktop: Scan QR with your UPI app camera
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:12px;" onclick="closeQR()">Close</button>
   </div>
 </div>
 
@@ -2005,38 +2020,27 @@ function sendChat() {
 }
 
 
-// ─── LIGHTWIDGET CHECK ────────────────────────────────
-let lwLoaded = false;
-function showInstaFallback() {
-  const lw = document.getElementById('lwContainer');
-  const fb = document.getElementById('instaFallback');
-  if (lw) lw.style.display = 'none';
-  if (fb) fb.style.display = 'block';
-}
-// Show fallback if widget doesn't load within 8 seconds
-setTimeout(() => {
-  if (!lwLoaded) {
-    const fw = document.getElementById('lwFrame');
-    if (fw) {
-      try {
-        // If frame has no content height, show fallback
-        if (fw.offsetHeight < 50) showInstaFallback();
-      } catch(e) { /* cross-origin OK */ }
-    }
-  }
-}, 8000);
+// Instagram section — direct link to @gymlover_govindshukla70
 
 // ─── PAYMENT ──────────────────────────────────────────────
-function payNow(){
-  const upi='upi://pay?pa=9548611898-3@ybl&pn=BrotherGym&am=800&cu=INR';
+const PLAN_NAMES = {800:'Monthly Membership',2100:'Quarterly Membership',7500:'Annual Membership'};
+
+function payNow(amount){
+  amount = amount || 800; // default to 800 if called without arg
+  const planName = PLAN_NAMES[amount] || 'Gym Membership';
+  const upi = 'upi://pay?pa=9548611898-3@ybl&pn=BrotherGym&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(planName);
   if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-    window.location.href=upi;
+    // Mobile: try opening UPI app directly
+    window.location.href = upi;
   } else {
-    const modal=document.getElementById('qrModal');
+    // Desktop: show QR code modal with correct amount
+    const modal = document.getElementById('qrModal');
+    document.getElementById('qrAmount').textContent = '₹' + amount.toLocaleString('en-IN');
+    document.getElementById('qrPlanLabel').textContent = planName + ' — Scan to pay';
     modal.classList.add('open');
-    const qrEl=document.getElementById('qrcode');
-    qrEl.innerHTML='';
-    new QRCode(qrEl,{text:upi,width:200,height:200,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+    const qrEl = document.getElementById('qrcode');
+    qrEl.innerHTML = '';
+    new QRCode(qrEl, {text:upi, width:200, height:200, colorDark:'#000', colorLight:'#fff', correctLevel:QRCode.CorrectLevel.H});
   }
 }
 function closeQR(){
