@@ -287,12 +287,12 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="view" id="adminView">
   <div class="sidebar" id="aSb">
     <div class="slogo">Admin Panel<small>Brothers Gym</small></div>
-    <div class="ni on" onclick="aPage('dashboard')"><span class="ico">📊</span> Dashboard</div>
-    <div class="ni" onclick="aPage('members')"><span class="ico">👥</span> Members <span class="nbadge" id="expBadge" style="display:none;">0</span></div>
-    <div class="ni" onclick="aPage('addmember')"><span class="ico">➕</span> Add Member</div>
-    <div class="ni" onclick="aPage('payments')"><span class="ico">💳</span> Payments</div>
-    <div class="ni" onclick="aPage('notifs')"><span class="ico">🔔</span> Notifications <span class="nbadge" id="aNBadge" style="display:none;">0</span></div>
-    <div class="ni" onclick="aPage('live')"><span class="ico">🔴</span> Go Live</div>
+    <div class="ni on" data-page="dashboard" onclick="aPage('dashboard')"><span class="ico">📊</span> Dashboard</div>
+    <div class="ni" data-page="members" onclick="aPage('members')"><span class="ico">👥</span> Members <span class="nbadge" id="expBadge" style="display:none;">0</span></div>
+    <div class="ni" data-page="addmember" onclick="aPage('addmember')"><span class="ico">➕</span> Add Member</div>
+    <div class="ni" data-page="payments" onclick="aPage('payments')"><span class="ico">💳</span> Payments</div>
+    <div class="ni" data-page="notifs" onclick="aPage('notifs')"><span class="ico">🔔</span> Notifications <span class="nbadge" id="aNBadge" style="display:none;">0</span></div>
+    <div class="ni" data-page="live" onclick="aPage('live')"><span class="ico">🔴</span> Go Live</div>
     <div class="sfooter">
       <div class="suser"><strong>Admin</strong>Brothers Gym Owner</div>
       <button class="lout" onclick="doLogout()">Logout</button>
@@ -427,12 +427,12 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="view" id="memberView">
   <div class="sidebar" id="mSb">
     <div class="slogo">My Account<small>Brothers Gym</small></div>
-    <div class="ni on" onclick="mPage('dashboard')"><span class="ico">🏠</span> Dashboard</div>
-    <div class="ni" onclick="mPage('membership')"><span class="ico">🎫</span> Membership</div>
-    <div class="ni" onclick="mPage('payments')"><span class="ico">💳</span> Payments</div>
-    <div class="ni" onclick="mPage('live')"><span class="ico">📺</span> Watch Live</div>
-    <div class="ni" onclick="mPage('notifs')"><span class="ico">🔔</span> Notifications <span class="nbadge" id="mNBadge" style="display:none;">0</span></div>
-    <div class="ni" onclick="mPage('settings')"><span class="ico">⚙️</span> Settings</div>
+    <div class="ni on" data-page="dashboard" onclick="mPage('dashboard')"><span class="ico">🏠</span> Dashboard</div>
+    <div class="ni" data-page="membership" onclick="mPage('membership')"><span class="ico">🎫</span> Membership</div>
+    <div class="ni" data-page="payments" onclick="mPage('payments')"><span class="ico">💳</span> Payments</div>
+    <div class="ni" data-page="live" onclick="mPage('live')"><span class="ico">📺</span> Watch Live</div>
+    <div class="ni" data-page="notifs" onclick="mPage('notifs')"><span class="ico">🔔</span> Notifications <span class="nbadge" id="mNBadge" style="display:none;">0</span></div>
+    <div class="ni" data-page="settings" onclick="mPage('settings')"><span class="ico">⚙️</span> Settings</div>
     <div class="sfooter">
       <div class="suser" id="mSUser"><strong>Member</strong>Loading...</div>
       <button class="lout" onclick="doLogout()">Logout</button>
@@ -481,15 +481,29 @@ tr:hover td{background:rgba(255,255,255,.02);}
     </div>
 
     <div class="page" id="mp-settings">
-      <div class="ptitle">Settings</div><div class="psub">Update your password.</div>
+      <div class="ptitle">Settings</div><div class="psub">Update your login password.</div>
       <div class="card" style="max-width:440px;">
-        <div class="ch"><span class="ct">Change Password</span></div>
+        <div class="ch"><span class="ct">🔐 Change Password</span></div>
         <div style="padding:22px;">
-          <div class="fg"><label>Current Password</label><input type="password" id="cpOld" placeholder="Current password"></div>
-          <div class="fg"><label>New Password</label><input type="password" id="cpNew" placeholder="Min 6 characters"></div>
-          <div class="fg"><label>Confirm New Password</label><input type="password" id="cpNew2" placeholder="Repeat" onkeydown="if(event.key==='Enter')doChangePw()"></div>
+          <div class="fg" style="position:relative;">
+            <label>Current Password</label>
+            <input type="password" id="cpOld" placeholder="Enter current password" style="padding-right:42px;">
+            <button type="button" onclick="togglePw('cpOld',this)" style="position:absolute;right:10px;bottom:11px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:15px;padding:0;">👁</button>
+          </div>
+          <div class="fg" style="position:relative;">
+            <label>New Password</label>
+            <input type="password" id="cpNew" placeholder="Min 6 characters" style="padding-right:42px;">
+            <button type="button" onclick="togglePw('cpNew',this)" style="position:absolute;right:10px;bottom:11px;background:none;border:none;color:var(--mu);cursor:pointer;font-size:15px;padding:0;">👁</button>
+          </div>
+          <div class="fg">
+            <label>Confirm New Password</label>
+            <input type="password" id="cpNew2" placeholder="Repeat new password" onkeydown="if(event.key==='Enter')doChangePw()">
+          </div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid var(--br);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mu);margin-bottom:4px;">
+            💡 Password must be at least 6 characters. After changing, use the new password next time you login.
+          </div>
           <div id="cpMsg" class="msg"></div>
-          <button class="btn" onclick="doChangePw()" style="margin-top:12px;">Update Password</button>
+          <button class="btn" onclick="doChangePw()" style="margin-top:12px;">🔐 Update Password</button>
         </div>
       </div>
     </div>
@@ -505,7 +519,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="fg"><label>Admin Password</label><input type="password" id="aPw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
     <div id="aMMsg" class="msg"></div>
     <button class="btn" onclick="doAdminLogin()" style="margin-top:12px;">Login as Admin</button>
-    <p style="font-size:12px;color:var(--mu);text-align:center;margin-top:12px;"></p>
+    <p style="font-size:12px;color:var(--mu);text-align:center;margin-top:12px;">Contact gym owner for admin access.</p>
   </div>
 </div>
 
@@ -541,8 +555,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
 
 <!-- DELETE CONFIRM MODAL -->
-<div class="mod" id="delMod">
-  <div class="mbox" style="max-width:400px;text-align:center;">
+<div class="mbg" id="delMod">
+  <div class="modal" style="max-width:400px;text-align:center;">
     <div style="font-size:52px;margin-bottom:12px;">⚠️</div>
     <div style="font-family:var(--fd);font-size:26px;font-weight:900;text-transform:uppercase;margin-bottom:10px;">Remove Member?</div>
     <div style="color:var(--mu);font-size:15px;margin-bottom:6px;">You are about to remove:</div>
@@ -578,10 +592,16 @@ let otpTimers = {};
 //  HELPERS
 // ════════════════════════════════════════
 async function api(method, path, body) {
-  const opts = { method, headers: { 'Content-Type': 'application/json' } };
-  if (body) opts.body = JSON.stringify(body);
-  const r = await fetch(API + path, opts);
-  return r.json();
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(API + path, opts);
+    if (!r.ok) return { success: false, message: 'Server error (' + r.status + '). Please try again.' };
+    return r.json();
+  } catch (e) {
+    console.error('API error:', path, e.message);
+    return { success: false, message: 'Cannot connect to server. Check your internet connection.' };
+  }
 }
 function showMsg(id, txt, type) {
   const el = document.getElementById(id);
@@ -775,6 +795,7 @@ async function doSignup() {
   const pass  = document.getElementById('sPw').value;
   const pass2 = document.getElementById('sPw2').value;
   if (!name || !phone) return showMsg('sMsg', 'All fields required.', 'err');
+  if (!pass || pass.length < 6) return showMsg('sMsg', 'Password must be at least 6 characters.', 'err');
   if (pass !== pass2) return showMsg('sMsg', 'Passwords do not match.', 'err');
   setBtn('sBtn', true, 'Creating account...');
   const data = await api('POST', '/api/auth/signup', { name, phone, password: pass });
@@ -810,8 +831,18 @@ async function doAdminLogin() {
 }
 
 function doLogout() {
+  // Clear live polling interval
+  if (window._liveInterval) { clearInterval(window._liveInterval); window._liveInterval = null; }
+  // Clear OTP timers
+  Object.values(otpTimers).forEach(t => clearInterval(t));
+  otpTimers = {};
+  otpVerified = { signup: false, forgot: false };
   session = null;
   sessionStorage.removeItem('gym_sess');
+  // Reset signup/forgot forms
+  ['sPhone','sName','sOTP','sPw','sPw2'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  ['sOtpGroup','sPwGroups','sBtn'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+  const sBtn = document.getElementById('sBtn'); if(sBtn) sBtn.style.display='none';
   showView('auth');
   aTab('login');
 }
@@ -822,11 +853,17 @@ function doLogout() {
 async function loadAdminView() {
   showView('admin');
   document.getElementById('dashDate').textContent = 'Today: ' + new Date().toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-  document.getElementById('am_date').value = new Date().toISOString().split('T')[0];
-  await refreshData();
-  await api('POST', '/api/notifications/check-expiry');
-  allNotifs = await api('GET', '/api/notifications');
-  renderDashboard(); renderMembers(); renderPayments(); renderANotifs();
+  const amDate = document.getElementById('am_date');
+  if (amDate) amDate.value = new Date().toISOString().split('T')[0];
+  try {
+    await refreshData();
+    await api('POST', '/api/notifications/check-expiry');
+    allNotifs = await api('GET', '/api/notifications');
+    if (!Array.isArray(allNotifs)) allNotifs = [];
+    renderDashboard(); renderMembers(); renderPayments(); renderANotifs();
+  } catch(e) {
+    floatNotif('⚠️ Load Error', 'Could not load data. Check server.', 'warn');
+  }
 }
 
 async function refreshData() {
@@ -837,9 +874,11 @@ function aPage(p) {
   document.querySelectorAll('#adminView .page').forEach(x => x.classList.remove('on'));
   document.querySelectorAll('#aSb .ni').forEach(x => x.classList.remove('on'));
   document.getElementById('ap-' + p).classList.add('on');
-  const navMap = {dashboard:'📊',members:'👥',addmember:'➕',payments:'💳',notifs:'🔔',live:'🔴'};
-  document.querySelectorAll('#aSb .ni').forEach(x => { if (x.textContent.includes(navMap[p] || '?')) x.classList.add('on'); });
+  const activeNav = document.querySelector('#aSb .ni[data-page="' + p + '"]');
+  if (activeNav) activeNav.classList.add('on');
   if (p === 'notifs') { api('GET', '/api/notifications').then(d => { allNotifs = d; renderANotifs(); }); }
+  if (p === 'members') renderMembers();
+  if (p === 'payments') renderPayments();
 }
 
 function renderDashboard() {
@@ -871,17 +910,21 @@ function renderMembers() {
   const q = (document.getElementById('mSrch') || {}).value || '';
   let list = allMembers;
   if (q) list = list.filter(m => m.name.toLowerCase().includes(q.toLowerCase()) || m.phone.includes(q));
-  document.getElementById('mBody').innerHTML = list.map(m => `
-    <tr>
-      <td><strong>${m.name}</strong></td><td>${m.phone}</td><td>${PLAN_LABEL[m.plan]}</td>
+  document.getElementById('mBody').innerHTML = list.map(m => {
+    const safeName = (m.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    const safeId = m.id;
+    const status = getStatus(m);
+    return `<tr>
+      <td><strong>${safeName}</strong></td><td>${m.phone}</td><td>${PLAN_LABEL[m.plan]||m.plan}</td>
       <td>${fmtDate(m.admissionDate)}</td><td>${fmtDate(getExpiry(m).toISOString().split('T')[0])}</td>
-      <td><span class="badge ${getStatus(m)}">${getStatus(m)}</span> <span class="badge ${m.paymentStatus}">${m.paymentStatus}</span></td>
+      <td><span class="badge ${status}">${status}</span> <span class="badge ${m.paymentStatus}">${m.paymentStatus}</span></td>
       <td><div class="abtn">
-        <button class="ib" onclick="openEdit('${m.id}')" title="Edit">✏️</button>
-        <button class="ib" onclick="openRenew('${m.id}')" title="Renew" style="color:var(--gn)">🔄</button>
-        <button class="ib del" onclick="openDelConfirm('${m.id}','${m.name.replace(/'/g,\'\')}')" title="Remove Member" style="background:rgba(239,68,68,.15);color:var(--rd);border-color:rgba(239,68,68,.3);">🗑️ Remove</button>
+        <button class="ib" onclick="openEdit('${safeId}')" title="Edit">✏️</button>
+        <button class="ib" onclick="openRenew('${safeId}')" title="Renew" style="color:var(--gn)">🔄</button>
+        <button class="ib del" onclick="openDelConfirm('${safeId}')" title="Remove" style="background:rgba(239,68,68,.15);color:var(--rd);border-color:rgba(239,68,68,.3);">🗑️ Remove</button>
       </div></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function togglePw(inputId, btn) {
@@ -937,9 +980,10 @@ async function saveEdit() {
   floatNotif('✏️ Updated', data.member?.name + ' saved', 'info');
 }
 let pendingDeleteId = '';
-function openDelConfirm(id, name) {
+function openDelConfirm(id) {
   pendingDeleteId = id;
-  document.getElementById('delMemberName').textContent = name;
+  const m = allMembers.find(x => x.id === id);
+  document.getElementById('delMemberName').textContent = m ? m.name : id;
   document.getElementById('delMod').classList.add('open');
 }
 async function confirmDelete() {
@@ -956,7 +1000,7 @@ async function confirmDelete() {
   floatNotif('🗑️ Removed', (m?.name || 'Member') + ' has been deleted', 'warn');
 }
 async function delMember(id) {
-  openDelConfirm(id, allMembers.find(x=>x.id===id)?.name || id);
+  openDelConfirm(id);
 }
 
 let renewId = '';
@@ -1042,15 +1086,19 @@ async function loadMemberView() {
       </div>`).join('')
     : '<div class="empty">No notifications yet ✅</div>';
   checkLiveStatus();
-  setInterval(checkLiveStatus, 10000); // Poll every 10s
+  if (window._liveInterval) clearInterval(window._liveInterval);
+  window._liveInterval = setInterval(checkLiveStatus, 10000); // Poll every 10s
 }
 
 function mPage(p) {
   document.querySelectorAll('#memberView .page').forEach(x => x.classList.remove('on'));
   document.querySelectorAll('#mSb .ni').forEach(x => x.classList.remove('on'));
   document.getElementById('mp-' + p).classList.add('on');
+  const activeNav = document.querySelector('#mSb .ni[data-page="' + p + '"]');
+  if (activeNav) activeNav.classList.add('on');
   if (p === 'membership') renderMembershipFull();
   if (p === 'payments') loadMemberPayments();
+  if (p === 'live') checkLiveStatus();
 }
 
 function renderMemberDash(m) {
@@ -1119,13 +1167,25 @@ async function loadMemberPayments() {
 }
 
 async function doChangePw() {
-  const old = document.getElementById('cpOld').value;
+  const old = document.getElementById('cpOld').value.trim();
   const nw  = document.getElementById('cpNew').value;
   const nw2 = document.getElementById('cpNew2').value;
-  if (nw !== nw2) return showMsg('cpMsg', 'Passwords do not match.', 'err');
-  const data = await api('POST', '/api/auth/change-password', { phone: session.phone, oldPassword: old, newPassword: nw });
+  if (!old) return showMsg('cpMsg', 'Enter your current password.', 'err');
+  if (!nw || nw.length < 6) return showMsg('cpMsg', 'New password must be at least 6 characters.', 'err');
+  if (nw !== nw2) return showMsg('cpMsg', 'New passwords do not match.', 'err');
+  if (nw === old) return showMsg('cpMsg', 'New password must be different from current password.', 'err');
+  // session.phone may be missing for admin-added members; reload from session storage
+  const phone = session.phone || (JSON.parse(sessionStorage.getItem('gym_sess')||'{}').phone);
+  if (!phone) return showMsg('cpMsg', 'Session error — please logout and login again.', 'err');
+  const data = await api('POST', '/api/auth/change-password', { phone, oldPassword: old, newPassword: nw });
   showMsg('cpMsg', data.message, data.success ? 'ok' : 'err');
-  if (data.success) { document.getElementById('cpOld').value = ''; document.getElementById('cpNew').value = ''; document.getElementById('cpNew2').value = ''; }
+  if (data.success) {
+    document.getElementById('cpOld').value = '';
+    document.getElementById('cpNew').value = '';
+    document.getElementById('cpNew2').value = '';
+    session.phone = phone;
+    sessionStorage.setItem('gym_sess', JSON.stringify(session));
+  }
 }
 
 // ════════════════════════════════════════
@@ -1187,13 +1247,22 @@ async function checkLiveStatus() {
     const dot = document.getElementById('mLiveDot');
     const stat = document.getElementById('mLiveStat');
     if (!dot) return;
-    if (data.live) {
+    if (data && data.live) {
       dot.style.background = 'var(--p)'; dot.style.animation = 'blk 1s ease infinite';
       stat.textContent = 'LIVE NOW 🔴';
       document.getElementById('mChatOnl').textContent = '● LIVE';
+      const offEl = document.getElementById('mLiveOff');
+      const onEl = document.getElementById('mLiveOn');
+      if (offEl) offEl.style.display = 'none';
+      if (onEl) onEl.style.display = 'block';
     } else {
       dot.style.background = '#555'; dot.style.animation = 'none';
       stat.textContent = 'Offline';
+      document.getElementById('mChatOnl').textContent = '● offline';
+      const offEl = document.getElementById('mLiveOff');
+      const onEl = document.getElementById('mLiveOn');
+      if (offEl) offEl.style.display = 'block';
+      if (onEl) onEl.style.display = 'none';
     }
   } catch(e) {}
 }

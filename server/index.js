@@ -482,6 +482,16 @@ app.post('/api/live/start',  (req, res) => { liveStatus = { live: true,  started
 app.post('/api/live/stop',   (req, res) => { liveStatus = { live: false, startedAt: null }; res.json({ success: true }); });
 
 // ════════════════════════════════════════════════════════
+//  HEALTH CHECK & KEEP-ALIVE (for UptimeRobot)
+// ════════════════════════════════════════════════════════
+// Point UptimeRobot at: https://brothersgym-kly5.onrender.com/ping
+// Interval: every 5 minutes → prevents Render free-tier from sleeping
+app.get('/ping', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString(), gym: 'Brothers Gym Mathura 💪' });
+});
+app.get('/health', (req, res) => res.json({ status: 'healthy' }));
+
+// ════════════════════════════════════════════════════════
 //  START SERVER
 // ════════════════════════════════════════════════════════
 app.listen(PORT, () => {

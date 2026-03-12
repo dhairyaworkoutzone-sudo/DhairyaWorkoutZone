@@ -176,6 +176,21 @@ nav a.cta-nav:hover { background: #e03500; color: white; }
   text-align: center;
   padding: 0 6%;
   overflow: hidden;
+  background-image: url('hero.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5,7,12,0.65) 0%, rgba(5,7,12,0.45) 40%, rgba(5,7,12,0.75) 100%);
+  z-index: 0;
+}
+.hero > div {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-badge {
@@ -1136,6 +1151,14 @@ footer {
   .timing-bar { gap: 20px; }
 }
 </style>
+
+  <!-- ─── UptimeRobot keep-alive ───────────────────────────────
+       UptimeRobot pings https://brothersgym-kly5.onrender.com/ping
+       every 5 minutes to prevent Render free-tier sleep.
+       Setup at: https://uptimerobot.com → Add New Monitor → HTTP(S)
+       URL: https://brothersgym-kly5.onrender.com/ping
+       Interval: every 5 minutes
+  ─────────────────────────────────────────────────────────── -->
 </head>
 
 <body>
@@ -1255,7 +1278,12 @@ footer {
     </div>
     <div class="about-visual">
       <div class="about-img-wrap">
-        <img src="hero.png" alt="The Brothers Gym" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:80px;\'>💪</div>'">
+        <img src="hero.png" alt="The Brothers Gym" 
+          onerror="this.outerHTML='<div style=\'width:100%;height:100%;min-height:360px;background:linear-gradient(160deg,#0d0200,#2a0a00,#0d0200);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:20px;\'>\
+<div style=\'font-size:80px;\'>🏋️</div>\
+<div style=\'font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:900;color:#ff3c00;text-transform:uppercase;letter-spacing:2px;text-align:center;\'>The Brothers<br>Unisex Gym</div>\
+<div style=\'font-size:12px;letter-spacing:3px;color:#7a7f8a;text-transform:uppercase;\'>Mahavan, Mathura</div>\
+</div>'">
       </div>
       <div class="about-badge">
         <strong>₹800</strong>
@@ -1324,7 +1352,8 @@ footer {
   <div class="trainers-grid">
     <div class="trainer-card">
       <div class="trainer-img-wrap">
-        <img src="trainer1.png" alt="Govind Shukla" onerror="this.style.display='none'; this.parentElement.style.background='#1a0a00'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:250px;font-size:80px;\'>💪</div>'">
+        <img src="trainer1.png" alt="Govind Shukla"
+          onerror="this.outerHTML='<div style=\'width:100%;height:260px;background:linear-gradient(160deg,#1a0800,#3d1200,#1a0800);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;\'><div style=\'width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#ff3c00,#a82500);display:flex;align-items:center;justify-content:center;font-size:42px;box-shadow:0 0 32px rgba(255,60,0,.4);\'>👑</div><div style=\'font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;color:#ff3c00;text-transform:uppercase;letter-spacing:2px;\'>GOVIND SHUKLA</div><div style=\'font-size:11px;letter-spacing:2px;color:#7a7f8a;text-transform:uppercase;\'>Founder &amp; Head Coach</div></div>'">
       </div>
       <div class="trainer-info">
         <div class="trainer-name">Govind Shukla</div>
@@ -1377,7 +1406,7 @@ footer {
   <p class="section-sub">State-of-the-art equipment, real people, real results.</p>
   <div class="gallery-grid">
     <div class="gallery-item gallery-item--overlay">
-      <img src="hero.png" alt="Gym floor" onerror="this.src='https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=90'">
+      <img src="hero.png" alt="Gym floor" onerror="this.src='https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=90'" style="width:100%;height:100%;object-fit:cover;">
       <div class="gallery-label">Main Floor</div>
     </div>
     <div class="gallery-item gallery-item--overlay">
@@ -1415,28 +1444,22 @@ footer {
     </a>
   </div>
 
-  <!-- ─── LightWidget embed ─── -->
-  <!-- SETUP STEPS (one time, free):
-       1. Go to https://lightwidget.com  →  Sign Up (free)
-       2. Connect your Instagram account @gymlover_govindshukla70
-       3. Choose grid layout, copy the widget code they give you
-       4. Paste it here replacing the iframe below (keep the outer div)
-  -->
+  <!-- LightWidget — Real Instagram Feed @gymlover_govindshukla70 -->
   <div class="lightwidget-wrap" id="lwContainer">
     <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
     <iframe
       id="lwFrame"
-      src="//lightwidget.com/widgets/YOUR_WIDGET_ID_HERE.html"
+      src="//lightwidget.com/widgets/6469f01e3b4c5ae58d78652acf6b1638.html"
       scrolling="no"
       allowtransparency="true"
       class="lightwidget-widget"
       style="width:100%;border:0;overflow:hidden;min-height:420px;border-radius:16px;"
-      onload="checkLW(this)"
+      onload="lwLoaded=true"
       onerror="showInstaFallback()">
     </iframe>
   </div>
 
-  <!-- Fallback card shown until LightWidget is set up -->
+  <!-- Fallback card shown if LightWidget fails to load -->
   <div id="instaFallback" style="display:none; border:1px solid var(--surface-border); border-radius:20px; overflow:hidden; background:var(--surface);">
     <div style="padding:52px 40px; text-align:center;">
       <div style="width:72px;height:72px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
@@ -1983,30 +2006,25 @@ function sendChat() {
 
 
 // ─── LIGHTWIDGET CHECK ────────────────────────────────
-function checkLW(iframe) {
-  try {
-    // If iframe src still has placeholder, show fallback
-    if (iframe.src.includes('YOUR_WIDGET_ID_HERE')) { showInstaFallback(); return; }
-    // Check if iframe loaded something real after short delay
-    setTimeout(() => {
-      try {
-        const h = iframe.contentWindow.document.body.innerHTML;
-        if (!h || h.length < 50) showInstaFallback();
-      } catch(e) { /* cross-origin is fine — widget loaded OK */ }
-    }, 3000);
-  } catch(e) { showInstaFallback(); }
-}
+let lwLoaded = false;
 function showInstaFallback() {
   const lw = document.getElementById('lwContainer');
   const fb = document.getElementById('instaFallback');
   if (lw) lw.style.display = 'none';
   if (fb) fb.style.display = 'block';
 }
-// Auto-show fallback if widget ID is placeholder
-(function(){ 
-  const f = document.getElementById('lwFrame');
-  if (f && f.src.includes('YOUR_WIDGET_ID_HERE')) showInstaFallback();
-})();
+// Show fallback if widget doesn't load within 8 seconds
+setTimeout(() => {
+  if (!lwLoaded) {
+    const fw = document.getElementById('lwFrame');
+    if (fw) {
+      try {
+        // If frame has no content height, show fallback
+        if (fw.offsetHeight < 50) showInstaFallback();
+      } catch(e) { /* cross-origin OK */ }
+    }
+  }
+}, 8000);
 
 // ─── PAYMENT ──────────────────────────────────────────────
 function payNow(){
