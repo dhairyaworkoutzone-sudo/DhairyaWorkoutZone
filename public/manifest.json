@@ -1,0 +1,32 @@
+{
+  "name": "Brothers Gym Portal",
+  "short_name": "BrothersGym",
+  "description": "The Brothers Unisex Gym — Member & Admin Portal",
+  "start_url": "/portal",
+  "display": "standalone",
+  "background_color": "#090b0f",
+  "theme_color": "#ff3c00",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness"],
+  "shortcuts": [
+    {
+      "name": "My Membership",
+      "url": "/portal",
+      "description": "View my membership status"
+    }
+  ]
+}

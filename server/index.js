@@ -17,6 +17,17 @@ const PORT = process.env.PORT || 3000;
 app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
+// Explicit routes for PWA files (correct headers)
+app.get('/sw.js', (req,res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.sendFile(path.join(__dirname, '../public/sw.js'));
+});
+app.get('/manifest.json', (req,res) => {
+  res.setHeader('Content-Type', 'application/manifest+json');
+  res.sendFile(path.join(__dirname, '../public/manifest.json'));
+});
 app.use(express.static(path.join(__dirname, '../public')));
 app.get('/portal', (req,res) => res.sendFile(path.join(__dirname,'../public/portal.html')));
 app.get('/',       (req,res) => res.sendFile(path.join(__dirname,'../public/index.html')));
@@ -43,6 +54,12 @@ const loginLimiter = rateLimit({
 //  MONGODB
 // ════════════════════════════════════════════════════════
 let db;
+
+// Guard — returns error if DB not connected yet
+function requireDB(req, res, next) {
+  if (!db) return res.json({ success: false, message: 'Database not connected yet. Please wait 10 seconds and try again.' });
+  next();
+}
 const PLAN_PRICE = {monthly:800, quarterly:2100, annual:7500};
 const PLAN_DAYS  = {monthly:30,  quarterly:90,   annual:365};
 
@@ -215,7 +232,7 @@ app.post('/api/otp/verify', (req,res) => {
 // ════════════════════════════════════════════════════════
 //  AUTH
 // ════════════════════════════════════════════════════════
-app.post('/api/auth/signup', async (req,res) => {
+app.post('/api/auth/signup', requireDB, async (req,res) => {
   const {name, phone, password} = req.body;
   const cp = String(phone||'').replace(/\D/g,'').slice(-10);
   if (!name || !cp || !password) return res.json({success:false, message:'All fields required.'});
@@ -251,7 +268,7 @@ app.post('/api/auth/login', loginLimiter, async (req,res) => {
   }
 });
 
-app.post('/api/auth/reset-password', async (req,res) => {
+app.post('/api/auth/reset-password', requireDB, async (req,res) => {
   const {phone, password} = req.body;
   const cp = String(phone||'').replace(/\D/g,'').slice(-10);
   if (!password || password.length < 6) return res.json({success:false, message:'Password must be at least 6 characters.'});
@@ -264,7 +281,7 @@ app.post('/api/auth/reset-password', async (req,res) => {
   }
 });
 
-app.post('/api/auth/change-password', async (req,res) => {
+app.post('/api/auth/change-password', requireDB, async (req,res) => {
   const {phone, oldPassword, newPassword} = req.body;
   const cp = String(phone||'').replace(/\D/g,'').slice(-10);
   try {
@@ -288,7 +305,7 @@ app.post('/api/auth/admin', (req,res) => {
 // ════════════════════════════════════════════════════════
 //  MEMBERS
 // ════════════════════════════════════════════════════════
-app.get('/api/members', async (req,res) => {
+app.get('/api/members', requireDB, async (req,res) => {
   try {
     const members = await db.collection('members').find({}).sort({admissionDate:-1}).toArray();
     res.json(members.map(sanitize));
@@ -297,7 +314,7 @@ app.get('/api/members', async (req,res) => {
   }
 });
 
-app.post('/api/members', async (req,res) => {
+app.post('/api/members', requireDB, async (req,res) => {
   const {name, phone, plan, admissionDate, gender, emergency, notes, paymentStatus, password} = req.body;
   const cp = String(phone||'').replace(/\D/g,'').slice(-10);
   if (!name || !cp || !plan || !admissionDate)
@@ -331,7 +348,7 @@ app.post('/api/members', async (req,res) => {
   }
 });
 
-app.put('/api/members/:id', async (req,res) => {
+app.put('/api/members/:id', requireDB, async (req,res) => {
   try {
     const {_id, password, ...upd} = req.body; // never overwrite password via edit
     await db.collection('members').updateOne({id:req.params.id}, {$set:upd});
@@ -342,7 +359,7 @@ app.put('/api/members/:id', async (req,res) => {
   }
 });
 
-app.delete('/api/members/:id', async (req,res) => {
+app.delete('/api/members/:id', requireDB, async (req,res) => {
   try {
     await db.collection('members').deleteOne({id:req.params.id});
     res.json({success:true});
@@ -351,7 +368,7 @@ app.delete('/api/members/:id', async (req,res) => {
   }
 });
 
-app.post('/api/members/:id/renew', async (req,res) => {
+app.post('/api/members/:id/renew', requireDB, async (req,res) => {
   const {plan, date, paymentStatus} = req.body;
   try {
     const m = await db.collection('members').findOne({id:req.params.id});
@@ -377,21 +394,21 @@ async function addPayment(data) {
   });
 }
 
-app.get('/api/payments', async (req,res) => {
+app.get('/api/payments', requireDB, async (req,res) => {
   try {
     const p = await db.collection('payments').find({}).sort({createdAt:-1}).toArray();
     res.json(p.map(({_id,...x}) => x));
   } catch(e) { res.json([]); }
 });
 
-app.get('/api/payments/member/:id', async (req,res) => {
+app.get('/api/payments/member/:id', requireDB, async (req,res) => {
   try {
     const p = await db.collection('payments').find({memberId:req.params.id}).sort({createdAt:-1}).toArray();
     res.json(p.map(({_id,...x}) => x));
   } catch(e) { res.json([]); }
 });
 
-app.put('/api/payments/:id/mark-paid', async (req,res) => {
+app.put('/api/payments/:id/mark-paid', requireDB, async (req,res) => {
   try {
     await db.collection('payments').updateOne({id:req.params.id}, {$set:{status:'paid'}});
     const p = await db.collection('payments').findOne({id:req.params.id});
@@ -417,14 +434,14 @@ async function addNotification(data) {
   } catch(e) { console.error('addNotification error:', e.message); }
 }
 
-app.get('/api/notifications', async (req,res) => {
+app.get('/api/notifications', requireDB, async (req,res) => {
   try {
     const n = await db.collection('notifications').find({}).sort({time:-1}).toArray();
     res.json(n.map(({_id,...x}) => x));
   } catch(e) { res.json([]); }
 });
 
-app.post('/api/notifications/check-expiry', async (req,res) => {
+app.post('/api/notifications/check-expiry', requireDB, async (req,res) => {
   try {
     const members = await db.collection('members').find({}).toArray();
     const today = new Date(); today.setHours(0,0,0,0);
@@ -452,14 +469,14 @@ app.post('/api/notifications/check-expiry', async (req,res) => {
   } catch(e) { res.json({success:false, added:0}); }
 });
 
-app.put('/api/notifications/:id/read', async (req,res) => {
+app.put('/api/notifications/:id/read', requireDB, async (req,res) => {
   try {
     await db.collection('notifications').updateOne({id:req.params.id}, {$set:{read:true}});
     res.json({success:true});
   } catch(e) { res.json({success:false}); }
 });
 
-app.delete('/api/notifications', async (req,res) => {
+app.delete('/api/notifications', requireDB, async (req,res) => {
   try {
     await db.collection('notifications').deleteMany({});
     res.json({success:true});
@@ -496,11 +513,158 @@ app.post('/api/live/stop', (req,res) => {
 // ════════════════════════════════════════════════════════
 //  HEALTH CHECK (UptimeRobot pings /ping every 5 min)
 // ════════════════════════════════════════════════════════
+
+// ── PWA Icons (generated SVG served as PNG-compatible) ──
+function gymIconSVG(size) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 512 512">
+    <rect width="512" height="512" rx="80" fill="#090b0f"/>
+    <rect x="40" y="220" width="80" height="72" rx="12" fill="#ff3c00"/>
+    <rect x="392" y="220" width="80" height="72" rx="12" fill="#ff3c00"/>
+    <rect x="100" y="240" width="60" height="32" rx="8" fill="#ff3c00"/>
+    <rect x="352" y="240" width="60" height="32" rx="8" fill="#ff3c00"/>
+    <rect x="148" y="196" width="216" height="120" rx="16" fill="#ff3c00"/>
+    <text x="256" y="285" font-family="Arial Black,sans-serif" font-weight="900" font-size="88" fill="white" text-anchor="middle" dominant-baseline="central">B</text>
+  </svg>`;
+}
+app.get('/icon-192.png', (req,res) => {
+  res.setHeader('Content-Type','image/svg+xml');
+  res.setHeader('Cache-Control','public,max-age=86400');
+  res.send(gymIconSVG(192));
+});
+app.get('/icon-512.png', (req,res) => {
+  res.setHeader('Content-Type','image/svg+xml');
+  res.setHeader('Cache-Control','public,max-age=86400');
+  res.send(gymIconSVG(512));
+});
+
+
+// ── PUSH SUBSCRIPTIONS ──────────────────────────────────
+// Store subscriptions in memory (and DB if connected)
+const pushSubscriptions = new Map(); // phone -> subscription
+
+app.post('/api/push/subscribe', async (req,res) => {
+  const { subscription, phone } = req.body;
+  if (!subscription || !phone) return res.json({success:false,message:'Missing data'});
+  pushSubscriptions.set(phone, subscription);
+  // Also store in DB if connected
+  if (db) {
+    await db.collection('push_subs').updateOne(
+      {phone}, {$set:{phone,subscription,updatedAt:new Date()}}, {upsert:true}
+    );
+  }
+  res.json({success:true});
+});
+
+app.post('/api/push/unsubscribe', async (req,res) => {
+  const {phone} = req.body;
+  pushSubscriptions.delete(phone);
+  if (db) await db.collection('push_subs').deleteOne({phone});
+  res.json({success:true});
+});
+
+// Send push to all subscribers or specific phone
+async function sendPush(payload, targetPhone = null) {
+  // Load all subs from DB
+  if (db) {
+    const query = targetPhone ? {phone:targetPhone} : {};
+    const subs = await db.collection('push_subs').find(query).toArray();
+    subs.forEach(s => pushSubscriptions.set(s.phone, s.subscription));
+  }
+  const targets = targetPhone
+    ? (pushSubscriptions.has(targetPhone) ? [pushSubscriptions.get(targetPhone)] : [])
+    : [...pushSubscriptions.values()];
+  // We use fetch to send to browser push endpoints directly (no webpush library needed for basic)
+  // Just store payload and let clients poll — simple & reliable
+  if (db) {
+    await db.collection('push_queue').insertOne({
+      ...payload, createdAt: new Date(), targetPhone: targetPhone || null, delivered: false
+    });
+  }
+  return targets.length;
+}
+
+// Client polls this to get pending push messages for them
+app.get('/api/push/poll', requireDB, async (req,res) => {
+  const {phone} = req.query;
+  if (!phone) return res.json([]);
+  const msgs = await db.collection('push_queue').find({
+    $or: [{targetPhone: phone}, {targetPhone: null}],
+    delivered: false,
+    createdAt: {$gte: new Date(Date.now() - 24*60*60*1000)}
+  }).sort({createdAt:-1}).limit(10).toArray();
+  res.json(msgs);
+});
+
+app.post('/api/push/mark-delivered', requireDB, async (req,res) => {
+  const {ids} = req.body;
+  if (!ids || !ids.length) return res.json({success:true});
+  const {ObjectId} = require('mongodb');
+  await db.collection('push_queue').updateMany(
+    {_id:{$in:ids.map(id=>{try{return new ObjectId(id)}catch(e){return id}})}},
+    {$set:{delivered:true}}
+  );
+  res.json({success:true});
+});
+
+// ── ANNOUNCEMENTS ──────────────────────────────────────────
+app.get('/api/announcements', requireDB, async (req,res) => {
+  const list = await db.collection('announcements')
+    .find({}).sort({createdAt:-1}).limit(20).toArray();
+  res.json(list);
+});
+
+app.post('/api/announcements', requireDB, async (req,res) => {
+  const {title, body, adminPassword} = req.body;
+  if (adminPassword !== (process.env.ADMIN_PASSWORD || 'admin123'))
+    return res.json({success:false, message:'Unauthorized'});
+  if (!title || !body) return res.json({success:false, message:'Title and body required'});
+  const ann = {title, body, createdAt: new Date(), id: require('crypto').randomUUID()};
+  await db.collection('announcements').insertOne(ann);
+  // Push to all members
+  await sendPush({type:'announcement', title:'📢 ' + title, body, url:'/portal'});
+  res.json({success:true, announcement: ann});
+});
+
+app.delete('/api/announcements/:id', requireDB, async (req,res) => {
+  const {adminPassword} = req.body;
+  if (adminPassword !== (process.env.ADMIN_PASSWORD || 'admin123'))
+    return res.json({success:false, message:'Unauthorized'});
+  await db.collection('announcements').deleteOne({id: req.params.id});
+  res.json({success:true});
+});
+
+// Trigger live notification to all members
+app.post('/api/push/live-alert', async (req,res) => {
+  const {title, adminPassword} = req.body;
+  if (adminPassword !== (process.env.ADMIN_PASSWORD || 'admin123'))
+    return res.json({success:false, message:'Unauthorized'});
+  const count = await sendPush({
+    type:'live', title:'🔴 Gym is LIVE!',
+    body: title ? (title + ' — Watch now!') : 'Your gym trainer is live! Join now 💪',
+    url:'/portal#live'
+  });
+  res.json({success:true, sent: count});
+});
+
+// Trigger expiry notification to specific member
+app.post('/api/push/expiry-alert', requireDB, async (req,res) => {
+  const {phone, memberName, daysLeft} = req.body;
+  await sendPush({
+    type:'expiry',
+    title:'⚠️ Membership Expiring',
+    body: 'Hi ' + memberName + '! Your membership expires in ' + daysLeft + ' day' + (daysLeft===1?'':'s') + '. Renew now to keep training! 💪',
+    url:'/portal#membership'
+  }, phone);
+  res.json({success:true});
+});
+
+app.get('/api/status', (req,res) => {
+  res.json({ dbConnected: !!db, server: 'ok', time: new Date().toISOString() });
+});
+
 app.get('/ping',   (req,res) => res.json({status:'ok', time:new Date().toISOString(), gym:'Brothers Gym Mathura 💪'}));
 app.get('/health', (req,res) => res.json({status:'healthy'}));
 
-// ════════════════════════════════════════════════════════
-//  START SERVER
 // ════════════════════════════════════════════════════════
 //  START HTTP FIRST — then connect DB
 //  This way Render sees the server is up and we get full logs

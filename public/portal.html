@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brothers Gym — Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#ff3c00">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BrothersGym">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 :root{--p:#ff3c00;--pd:rgba(255,60,0,0.12);--pg:rgba(255,60,0,0.35);--bg:#090b0f;--sf:rgba(255,255,255,0.04);--sf2:rgba(255,255,255,0.07);--br:rgba(255,255,255,0.08);--tx:#f0f0f0;--mu:#7a7f8a;--gn:#22c55e;--yw:#eab308;--rd:#ef4444;--bl:#3b82f6;--fd:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;}
@@ -189,6 +195,33 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .fntitle{font-size:14px;font-weight:700;margin-bottom:2px;}
 .fndesc{font-size:13px;color:var(--mu);}
 
+/* PWA INSTALL BANNER */
+.pwa-banner{position:fixed;bottom:0;left:0;right:0;background:#0e1118;border-top:1px solid var(--br);padding:14px 20px;display:flex;align-items:center;gap:14px;z-index:9999;transform:translateY(100%);transition:transform .4s ease;}
+.pwa-banner.show{transform:translateY(0);}
+.pwa-banner .ico{font-size:36px;flex-shrink:0;}
+.pwa-banner .txt{flex:1;}
+.pwa-banner .txt strong{display:block;font-size:15px;color:var(--tx);margin-bottom:2px;}
+.pwa-banner .txt span{font-size:13px;color:var(--mu);}
+.pwa-install-btn{background:var(--p);color:white;border:none;border-radius:8px;font-family:var(--fd);font-size:14px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:10px 18px;cursor:pointer;white-space:nowrap;}
+.pwa-dismiss{background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;padding:6px;}
+.pwa-dismiss:hover{color:var(--tx);}
+
+/* PUSH NOTIFICATION BELL */
+.push-bell{position:fixed;bottom:80px;right:18px;z-index:8000;width:48px;height:48px;border-radius:50%;background:var(--p);border:none;color:white;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(255,60,0,.4);display:none;align-items:center;justify-content:center;transition:.2s;}
+.push-bell:hover{transform:scale(1.1);}
+.push-bell.active{background:#1a3a1a;box-shadow:0 4px 20px rgba(34,197,94,.3);}
+@media(max-width:900px){.push-bell{bottom:20px;right:14px;}}
+
+/* ANNOUNCEMENT CARDS */
+.ann-card{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05);transition:.2s;}
+.ann-card:last-child{border-bottom:none;}
+.ann-card:hover{background:var(--sf2);}
+.ann-title{font-size:15px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:8px;}
+.ann-body{font-size:14px;color:var(--mu);line-height:1.6;margin-bottom:6px;}
+.ann-time{font-size:11px;color:var(--mu);}
+.ann-del{background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;margin-left:auto;padding:2px 8px;border-radius:5px;}
+.ann-del:hover{background:rgba(239,68,68,.15);color:var(--rd);}
+
 /* MISC */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
@@ -253,6 +286,20 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </head>
 <body>
 <canvas id="bg3d"></canvas>
+
+<!-- PWA Install Banner -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="ico">💪</div>
+  <div class="txt">
+    <strong>Install Brothers Gym App</strong>
+    <span>Add to home screen for quick access & notifications</span>
+  </div>
+  <button class="pwa-install-btn" onclick="installPWA()">Install</button>
+  <button class="pwa-dismiss" onclick="dismissPWA()">✕</button>
+</div>
+
+<!-- Push Bell -->
+<button class="push-bell" id="pushBell" onclick="togglePushNotifs()" title="Enable notifications">🔔</button>
 <div class="fn-wrap" id="fnWrap"></div>
 <div class="hbg" id="hbg" onclick="toggleSb()"><span></span><span></span><span></span></div>
 <div class="ovlay" id="ovlay" onclick="toggleSb()"></div>
@@ -334,6 +381,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="ni" data-page="addmember" onclick="aPage('addmember')"><span class="ico">➕</span> Add Member</div>
     <div class="ni" data-page="payments" onclick="aPage('payments')"><span class="ico">💳</span> Payments</div>
     <div class="ni" data-page="notifs" onclick="aPage('notifs')"><span class="ico">🔔</span> Notifications <span class="nbadge" id="aNBadge" style="display:none;">0</span></div>
+    <div class="ni" data-page="announce" onclick="aPage('announce')"><span class="ico">📢</span> Announcements <span class="nbadge" id="annBadge" style="display:none;">0</span></div>
     <div class="ni" data-page="live" onclick="aPage('live')"><span class="ico">🔴</span> Go Live</div>
     <div class="sfooter">
       <div class="suser"><strong>Admin</strong>Brothers Gym Owner</div>
@@ -411,6 +459,25 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <div id="amMsg" class="msg"></div>
           <button class="btn" onclick="addMember()" style="margin-top:16px;">💾 Save Member</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="page" id="ap-announce">
+      <div class="ptitle">Announcements</div>
+      <div class="psub">Send announcements to all members. They see it in their portal and get a push notification.</div>
+      <div class="card" style="max-width:600px;margin-bottom:22px;">
+        <div class="ch"><span class="ct">📢 New Announcement</span></div>
+        <div style="padding:22px;">
+          <div class="fg"><label>Title *</label><input id="ann_title" placeholder="e.g. Holiday Schedule, New Timing..."></div>
+          <div class="fg"><label>Message *</label><textarea id="ann_body" placeholder="Write your announcement here..." rows="4" style="width:100%;background:rgba(255,255,255,.05);border:1px solid var(--br);border-radius:8px;color:var(--tx);font-family:var(--fb);font-size:15px;padding:12px 14px;outline:none;resize:vertical;min-height:100px;"></textarea></div>
+          <div id="annMsg" class="msg"></div>
+          <button class="btn" onclick="postAnnouncement()" style="margin-top:8px;">📢 Send to All Members</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="ct">Past Announcements</span><button class="sb ol" onclick="loadAnnouncements()">↻ Refresh</button></div>
+        <div id="annList"><div class="empty">Loading...</div></div>
       </div>
     </div>
 
@@ -495,6 +562,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="ni" data-page="membership" onclick="mPage('membership')"><span class="ico">🎫</span> Membership</div>
     <div class="ni" data-page="payments" onclick="mPage('payments')"><span class="ico">💳</span> Payments</div>
     <div class="ni" data-page="live" onclick="mPage('live')"><span class="ico">📺</span> Watch Live</div>
+    <div class="ni" data-page="announce" onclick="mPage('announce')"><span class="ico">📢</span> Announcements <span class="nbadge" id="mAnnBadge" style="display:none;"></span></div>
     <div class="ni" data-page="notifs" onclick="mPage('notifs')"><span class="ico">🔔</span> Notifications <span class="nbadge" id="mNBadge" style="display:none;">0</span></div>
     <div class="ni" data-page="settings" onclick="mPage('settings')"><span class="ico">⚙️</span> Settings</div>
     <div class="sfooter">
@@ -550,6 +618,11 @@ tr:hover td{background:rgba(255,255,255,.02);}
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="page" id="mp-announce">
+      <div class="ptitle">📢 Announcements</div><div class="psub">Updates from your gym owner.</div>
+      <div class="card" id="mAnnCard"><div class="empty">Loading announcements...</div></div>
     </div>
 
     <div class="page" id="mp-notifs">
@@ -674,11 +747,28 @@ async function api(method, path, body) {
     if (body) opts.body = JSON.stringify(body);
     const r = await fetch(API + path, opts);
     if (!r.ok) return { success: false, message: 'Server error (' + r.status + '). Please try again.' };
-    return r.json();
+    const data = await r.json();
+    // If DB not connected yet, show friendly message
+    if (data && data.success === false && data.message && data.message.includes('Database not connected')) {
+      floatNotif('⏳ Connecting...', 'Server is starting up. Please wait 10 seconds and try again.', 'warn');
+    }
+    return data;
   } catch (e) {
     console.error('API error:', path, e.message);
     return { success: false, message: 'Cannot connect to server. Check your internet connection.' };
   }
+}
+
+// Check if DB is ready — called on portal load
+async function checkDBReady() {
+  try {
+    const r = await fetch('/api/status');
+    const data = await r.json();
+    if (!data.dbConnected) {
+      floatNotif('⏳ Database connecting...', 'Server starting up. Data loads in ~15 seconds.', 'warn');
+      setTimeout(checkDBReady, 8000); // retry in 8s
+    }
+  } catch(e) {}
 }
 function showMsg(id, txt, type) {
   const el = document.getElementById(id);
@@ -955,6 +1045,7 @@ async function refreshData() {
 }
 
 function aPage(p) {
+  if (p === 'announce') loadAnnouncements();
   closeSbOnMobile();
   document.querySelectorAll('#adminView .page').forEach(x => x.classList.remove('on'));
   if (p === 'live') loadAdminLiveState();
@@ -1147,6 +1238,7 @@ async function markNRead(id) { await api('PUT', `/api/notifications/${id}/read`)
 //  MEMBER VIEW
 // ════════════════════════════════════════
 async function loadMemberView() {
+  setTimeout(loadAnnouncements, 1000); // Load announcements in background
   showView('member');
   const m = session;
   document.getElementById('mSUser').innerHTML = `<strong>${m.name}</strong>ID: ${m.id}`;
@@ -1177,6 +1269,7 @@ async function loadMemberView() {
 }
 
 function mPage(p) {
+  if (p === 'announce') loadAnnouncements();
   closeSbOnMobile();
   document.querySelectorAll('#memberView .page').forEach(x => x.classList.remove('on'));
   document.querySelectorAll('#mSb .ni').forEach(x => x.classList.remove('on'));
@@ -1409,10 +1502,174 @@ function sendMChat() { const i=document.getElementById('mChatIn'); const v=i.val
 //  INIT
 // ════════════════════════════════════════
 (function init() {
+  checkDBReady();
+  initPWA();
   if (!session) { showView('auth'); return; }
   if (session.type === 'admin') loadAdminView();
   else loadMemberView();
 })();
+
+// ════════════════════════════════════════
+//  PWA — Service Worker + Install + Push
+// ════════════════════════════════════════
+let deferredInstallPrompt = null;
+
+function initPWA() {
+  // Only register SW on real domain (not claude preview or localhost during dev)
+  const isRealDomain = location.hostname.includes('onrender.com') || location.hostname.includes('brothersgym');
+  if ('serviceWorker' in navigator && isRealDomain) {
+    navigator.serviceWorker.register('/sw.js').then(() => {
+      if (session) {
+        setInterval(pollPushMessages, 30000);
+        setTimeout(pollPushMessages, 3000);
+      }
+    }).catch(e => console.log('SW error:', e));
+  } // end isRealDomain
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (!localStorage.getItem('pwa_dismissed')) {
+      setTimeout(() => document.getElementById('pwaBanner').classList.add('show'), 2000);
+    }
+  });
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('pwaBanner').classList.remove('show');
+    floatNotif('✅ App Installed!', 'Brothers Gym added to your home screen', 'ok');
+    deferredInstallPrompt = null;
+  });
+  if (session) {
+    const bell = document.getElementById('pushBell');
+    if (bell) bell.style.display = 'flex';
+    updateBellState();
+  }
+}
+
+async function installPWA() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') floatNotif('✅ Installing...', 'App added to home screen!', 'ok');
+  deferredInstallPrompt = null;
+  document.getElementById('pwaBanner').classList.remove('show');
+}
+
+function dismissPWA() {
+  document.getElementById('pwaBanner').classList.remove('show');
+  localStorage.setItem('pwa_dismissed', '1');
+}
+
+// ── Push Notifications ──
+async function togglePushNotifs() {
+  if (Notification.permission === 'denied') {
+    floatNotif('🔕 Blocked', 'Enable notifications in your browser/phone settings', 'warn'); return;
+  }
+  if (localStorage.getItem('push_enabled')) {
+    await api('POST', '/api/push/unsubscribe', { phone: session.phone });
+    localStorage.removeItem('push_enabled');
+    floatNotif('🔕 Notifications off', 'You will not receive push alerts', 'info');
+  } else {
+    const result = await Notification.requestPermission();
+    if (result === 'granted') {
+      await api('POST', '/api/push/subscribe', { subscription: {endpoint:'browser-poll'}, phone: session.phone });
+      localStorage.setItem('push_enabled', '1');
+      floatNotif('🔔 Notifications ON!', 'You will be notified about live sessions & expiry', 'ok');
+    } else {
+      floatNotif('❌ Permission denied', 'Allow notifications in your browser settings', 'warn');
+    }
+  }
+  updateBellState();
+}
+
+function updateBellState() {
+  const bell = document.getElementById('pushBell');
+  if (!bell) return;
+  const on = !!localStorage.getItem('push_enabled') && Notification.permission === 'granted';
+  bell.classList.toggle('active', on);
+  bell.textContent = on ? '🔔' : '🔕';
+  bell.title = on ? 'Notifications ON — tap to disable' : 'Tap to enable notifications';
+}
+
+let lastPollIds = new Set();
+async function pollPushMessages() {
+  if (!session || !session.phone || !localStorage.getItem('push_enabled')) return;
+  try {
+    const msgs = await api('GET', '/api/push/poll?phone=' + encodeURIComponent(session.phone));
+    if (!Array.isArray(msgs) || !msgs.length) return;
+    const fresh = msgs.filter(m => !lastPollIds.has(String(m._id)));
+    fresh.forEach(m => { lastPollIds.add(String(m._id)); showBrowserNotif(m.title, m.body, m.type); });
+    if (fresh.length) await api('POST', '/api/push/mark-delivered', { ids: fresh.map(m => m._id) });
+  } catch(e) {}
+}
+
+function showBrowserNotif(title, body, type) {
+  const t = { live:'ok', expiry:'warn', announcement:'info', renewal:'ok' };
+  floatNotif(title, body, t[type] || 'info');
+  if (Notification.permission === 'granted' && document.hidden) {
+    try { new Notification(title, { body, icon: '/icon-192.png', tag: type }); } catch(e) {}
+  }
+}
+
+// ════════════════════════════════════════
+//  ANNOUNCEMENTS
+// ════════════════════════════════════════
+async function loadAnnouncements() {
+  const data = await api('GET', '/api/announcements');
+  if (!Array.isArray(data)) return;
+
+  const adminList = document.getElementById('annList');
+  if (adminList) {
+    adminList.innerHTML = data.length ? data.map(a => `
+      <div class="ann-card">
+        <div class="ann-title">📢 ${a.title}
+          <button class="ann-del" onclick="deleteAnn('${a.id}')">🗑</button>
+        </div>
+        <div class="ann-body">${a.body}</div>
+        <div class="ann-time">${fmtDate(a.createdAt)}</div>
+      </div>`).join('') : '<div class="empty">No announcements yet. Write your first one above!</div>';
+  }
+
+  const mCard = document.getElementById('mAnnCard');
+  if (mCard) {
+    mCard.innerHTML = data.length ? data.map(a => `
+      <div class="ann-card">
+        <div class="ann-title">📢 ${a.title}</div>
+        <div class="ann-body">${a.body}</div>
+        <div class="ann-time">${fmtDate(a.createdAt)}</div>
+      </div>`).join('') : '<div class="empty">No announcements from the gym yet. Check back later!</div>';
+  }
+
+  const mBadge = document.getElementById('mAnnBadge');
+  if (mBadge) {
+    if (data.length) { mBadge.textContent = data.length; mBadge.style.display = 'inline-block'; }
+    else mBadge.style.display = 'none';
+  }
+}
+
+async function postAnnouncement() {
+  const title = document.getElementById('ann_title').value.trim();
+  const body  = document.getElementById('ann_body').value.trim();
+  if (!title) return showMsg('annMsg', 'Please enter a title.', 'err');
+  if (!body)  return showMsg('annMsg', 'Please write the announcement message.', 'err');
+  const pw = prompt('Enter admin password to confirm:');
+  if (!pw) return;
+  const data = await api('POST', '/api/announcements', { title, body, adminPassword: pw });
+  showMsg('annMsg', data.success ? '✅ Announcement sent to all members!' : (data.message || 'Error'), data.success ? 'ok' : 'err');
+  if (data.success) {
+    document.getElementById('ann_title').value = '';
+    document.getElementById('ann_body').value = '';
+    loadAnnouncements();
+    floatNotif('📢 Announced!', title, 'ok');
+  }
+}
+
+async function deleteAnn(id) {
+  if (!confirm('Delete this announcement?')) return;
+  const pw = prompt('Admin password:');
+  if (!pw) return;
+  const data = await api('DELETE', '/api/announcements/' + id, { adminPassword: pw });
+  if (data.success) { loadAnnouncements(); floatNotif('🗑 Deleted', 'Announcement removed', 'info'); }
+  else floatNotif('❌ ' + (data.message || 'Error'), '', 'danger');
+}
 </script>
 </body>
 </html>
