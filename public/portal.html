@@ -65,7 +65,7 @@ canvas#bg3d{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
 
 /* LAYOUT */
 #adminView,#memberView{flex-direction:row;}
-.sidebar{width:240px;min-height:100vh;background:rgba(9,11,15,.98);border-right:1px solid var(--br);display:flex;flex-direction:column;padding:20px 0;position:fixed;top:0;left:0;z-index:400;transition:transform .3s;}
+.sidebar{width:240px;min-height:100vh;background:rgba(9,11,15,.98);border-right:1px solid var(--br);display:flex;flex-direction:column;padding:20px 0;position:fixed;top:0;left:0;z-index:600;transition:transform .3s;}
 .slogo{font-family:var(--fd);font-size:19px;font-weight:900;color:var(--p);padding:0 20px 18px;border-bottom:1px solid var(--br);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;line-height:1.2;}
 .slogo small{display:block;font-family:var(--fb);font-size:10px;font-weight:400;color:var(--mu);letter-spacing:2px;}
 .ni{display:flex;align-items:center;gap:11px;padding:12px 20px;color:var(--mu);font-size:14px;font-weight:500;cursor:pointer;transition:.2s;border-left:3px solid transparent;min-height:44px;user-select:none;}
@@ -224,6 +224,13 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .push-bell:hover{transform:scale(1.1);}
 .push-bell.active{background:#1a3a1a;box-shadow:0 4px 20px rgba(34,197,94,.3);}
 
+/* LIVE ADMIN GRID */
+.live-admin-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;}
+@media(max-width:900px){.live-admin-grid{grid-template-columns:1fr;}}
+.plat-btn{background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--mu);font-family:var(--fb);font-size:13px;font-weight:600;padding:10px 8px;border-radius:8px;cursor:pointer;transition:.2s;text-align:center;}
+.plat-btn:hover{border-color:var(--p);color:var(--tx);}
+.plat-btn.active-plat{background:var(--pd);border-color:var(--p);color:var(--p);}
+
 /* MISC */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
@@ -235,7 +242,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
 /* RESPONSIVE */
 @media(max-width:900px){
-  .sidebar{transform:translateX(-100%);z-index:400;}
+  .sidebar{transform:translateX(-100%);z-index:600;}
   .sidebar.open{transform:translateX(0);}
   .main{margin-left:0;padding:64px 14px 20px;}
   .srow{grid-template-columns:1fr 1fr;}
@@ -262,10 +269,10 @@ tr:hover td{background:rgba(255,255,255,.02);}
   table{min-width:460px;}
 }
 /* Hamburger */
-.hbg{display:none;position:fixed;top:12px;left:12px;z-index:500;background:rgba(9,11,15,.95);border:1px solid var(--br);border-radius:10px;padding:10px 13px;cursor:pointer;flex-direction:column;gap:5px;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.hbg{display:none;position:fixed;top:12px;left:12px;z-index:700;background:rgba(9,11,15,.98);border:1px solid rgba(255,60,0,.3);border-radius:10px;padding:10px 13px;cursor:pointer;flex-direction:column;gap:5px;box-shadow:0 4px 20px rgba(0,0,0,.5);}
 .hbg span{display:block;width:22px;height:2px;background:var(--tx);border-radius:2px;transition:.3s;}
 @media(max-width:900px){.hbg{display:flex;}}
-.ovlay{display:none;position:fixed;inset:0;z-index:390;background:rgba(0,0,0,.6);}
+.ovlay{display:none;position:fixed;inset:0;z-index:590;background:rgba(0,0,0,.7);}
 .ovlay.show{display:block;}
 </style>
 </head>
@@ -487,35 +494,40 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
     <!-- LIVE -->
     <div class="page" id="ap-live">
-      <div class="ptitle">Go Live</div><div class="psub">Start a YouTube or Facebook live — members see it instantly. Visible to everyone on main website too.</div>
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;">
+      <div class="ptitle">Go Live</div>
+      <div class="psub">Start a live session — members see it instantly. Visible to everyone on main website too.</div>
+      <div class="live-admin-grid">
         <div>
           <div id="aLiveOff" class="card" style="padding:24px;">
-            <div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin-bottom:16px;">Start a Live Session</div>
-            <div class="fg"><label>YouTube / Facebook Live URL *</label><input id="aLiveUrl" placeholder="https://youtube.com/live/... or youtu.be/..."></div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);margin-bottom:16px;">Choose Platform</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;" id="livePlatformBtns">
+              <button onclick="selectPlatform('youtube')" id="plat-youtube" class="plat-btn active-plat">▶ YouTube</button>
+              <button onclick="selectPlatform('instagram')" id="plat-instagram" class="plat-btn">📸 Instagram</button>
+              <button onclick="selectPlatform('facebook')" id="plat-facebook" class="plat-btn">📘 Facebook</button>
+            </div>
+            <div id="platformHelp" style="font-size:12px;color:var(--mu);background:rgba(255,255,255,.03);border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.7;"></div>
+            <div class="fg"><label id="liveUrlLabel">YouTube / Facebook Live URL *</label><input id="aLiveUrl" placeholder="https://youtube.com/live/..."></div>
             <div class="fg"><label>Session Title</label><input id="aLiveTitle" placeholder="Morning Workout, Chest Day..."></div>
             <button class="btn" onclick="adminGoLive()">🔴 Go Live Now</button>
-            <div style="margin-top:14px;padding:12px 16px;background:rgba(255,255,255,.03);border-radius:8px;font-size:13px;color:var(--mu);line-height:1.7;">
-              <strong style="color:var(--tx);">How to go live:</strong><br>
-              1. Open YouTube app → + → Go Live → copy link<br>
-              2. Paste link above → click Go Live Now<br>
-              3. Members see it instantly. Push notification sent!
-            </div>
           </div>
           <div id="aLiveOn" style="display:none;">
-            <div style="background:rgba(255,60,0,.08);border:1px solid rgba(255,60,0,.3);border-radius:14px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;">
+            <div style="background:rgba(255,60,0,.08);border:1px solid rgba(255,60,0,.3);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
               <div class="ldot"></div>
-              <div style="flex:1"><strong id="aLiveTitle2"></strong><div style="font-size:12px;color:var(--mu);margin-top:2px;" id="aLiveUrlShow"></div></div>
+              <div style="flex:1;min-width:0;"><strong id="aLiveTitle2" style="display:block;"></strong><div style="font-size:12px;color:var(--mu);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="aLiveUrlShow"></div></div>
               <button class="sb" style="background:var(--rd);" onclick="adminStopLive()">⏹ Stop</button>
             </div>
-            <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;">
+            <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;background:#000;">
               <iframe id="aLiveFrame" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            </div>
+            <div id="igLiveFallback" style="display:none;padding:20px;text-align:center;background:rgba(255,255,255,.03);border-radius:14px;margin-top:8px;">
+              <div style="font-size:13px;color:var(--mu);margin-bottom:10px;">Instagram Live cannot be embedded. Share this link with members:</div>
+              <a id="igLiveLink" href="#" target="_blank" style="color:var(--p);font-weight:700;word-break:break-all;font-size:14px;"></a>
             </div>
           </div>
         </div>
-        <div class="card" style="display:flex;flex-direction:column;max-height:500px;">
+        <div class="card" style="display:flex;flex-direction:column;height:420px;">
           <div style="padding:12px 16px;border-bottom:1px solid var(--br);font-weight:600;font-size:14px;">💬 Live Chat</div>
-          <div id="aChatMsgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;"></div>
+          <div id="aChatMsgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:0;"></div>
           <div style="display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--br);">
             <input id="aChatIn" style="flex:1;background:rgba(255,255,255,.05);border:1px solid var(--br);border-radius:7px;color:var(--tx);font-family:var(--fb);font-size:13px;padding:8px 12px;outline:none;" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendAChat()">
             <button style="background:var(--p);border:none;color:white;font-size:15px;padding:8px 12px;border-radius:7px;cursor:pointer;" onclick="sendAChat()">➤</button>
@@ -760,8 +772,24 @@ function closeMod(id) { document.getElementById(id).classList.remove('open'); }
 function openAdminModal() { document.getElementById('aPw').value=''; document.getElementById('aMMsg').style.display='none'; document.getElementById('adminMod').classList.add('open'); setTimeout(()=>document.getElementById('aPw').focus(),100); }
 function togglePw(id,btn) { const inp=document.getElementById(id); inp.type=inp.type==='password'?'text':'password'; btn.textContent=inp.type==='password'?'👁':'🙈'; }
 
-function toggleSb() { document.querySelectorAll('.sidebar').forEach(s=>s.classList.toggle('open')); document.getElementById('ovlay').classList.toggle('show'); }
-function closeSb() { document.querySelectorAll('.sidebar').forEach(s=>s.classList.remove('open')); document.getElementById('ovlay').classList.remove('show'); }
+function toggleSb() {
+  // Only toggle the sidebar that belongs to current view
+  const activeView = document.querySelector('.view.active');
+  const sb = activeView ? activeView.querySelector('.sidebar') : null;
+  if (!sb) return;
+  const isOpen = sb.classList.contains('open');
+  // Close all first
+  document.querySelectorAll('.sidebar').forEach(s=>s.classList.remove('open'));
+  document.getElementById('ovlay').classList.remove('show');
+  if (!isOpen) {
+    sb.classList.add('open');
+    document.getElementById('ovlay').classList.add('show');
+  }
+}
+function closeSb() {
+  document.querySelectorAll('.sidebar').forEach(s=>s.classList.remove('open'));
+  document.getElementById('ovlay').classList.remove('show');
+}
 function closeSbOnMobile() { if(window.innerWidth<=900) closeSb(); }
 
 // THREE.JS background
@@ -1141,23 +1169,40 @@ async function clearAdminNotifs() {
 // Live
 function getLiveEmbedUrl(url) {
   if(!url) return '';
+  // YouTube
   const yt=url.match(/(?:youtube\.com\/live\/|youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
   if(yt) return 'https://www.youtube.com/embed/'+yt[1]+'?autoplay=1&rel=0';
+  // Facebook
   if(url.includes('facebook.com')||url.includes('fb.watch')) return 'https://www.facebook.com/plugins/video.php?href='+encodeURIComponent(url)+'&autoplay=1&show_text=0';
+  // Instagram — cannot be embedded, return null signal
+  if(url.includes('instagram.com')) return null;
   return url;
 }
 
 async function adminGoLive() {
   const url=document.getElementById('aLiveUrl').value.trim();
   const title=document.getElementById('aLiveTitle').value.trim()||'Gym Live Session';
-  if(!url){floatNotif('❌ No Link','Paste YouTube or Facebook Live link.','danger');return;}
-  await api('POST','/api/live/start',{url,title});
+  if(!url){floatNotif('❌ No Link','Paste your live URL first.','danger');return;}
+  await api('POST','/api/live/start',{url,title,platform:currentPlatform});
   document.getElementById('aLiveOff').style.display='none';
   document.getElementById('aLiveOn').style.display='block';
   document.getElementById('aLiveTitle2').textContent=title;
   document.getElementById('aLiveUrlShow').textContent=url;
-  document.getElementById('aLiveFrame').src=getLiveEmbedUrl(url);
-  floatNotif('🔴 You are LIVE!','Members and website visitors can watch now.','ok');
+  const embedUrl = getLiveEmbedUrl(url);
+  const igFallback = document.getElementById('igLiveFallback');
+  if(embedUrl===null) {
+    // Instagram — show link fallback
+    document.getElementById('aLiveFrame').style.display='none';
+    igFallback.style.display='block';
+    document.getElementById('igLiveLink').textContent=url;
+    document.getElementById('igLiveLink').href=url;
+    floatNotif('📸 Instagram Live started!','Members will get a direct link to open in Instagram.','ok');
+  } else {
+    document.getElementById('aLiveFrame').style.display='block';
+    igFallback.style.display='none';
+    document.getElementById('aLiveFrame').src=embedUrl;
+    floatNotif('🔴 You are LIVE!','Members and website visitors can watch now.','ok');
+  }
   addChatMsg('aChatMsgs','BrothersGym 🏋️','🔴 Stream started! 💪');
 }
 
@@ -1173,13 +1218,22 @@ async function adminStopLive() {
 }
 
 async function loadAdminLiveState() {
+  initLivePlatform();
   const data=await api('GET','/api/live/status');
   if(data&&data.live){
     document.getElementById('aLiveOff').style.display='none';
     document.getElementById('aLiveOn').style.display='block';
     document.getElementById('aLiveTitle2').textContent=data.title||'';
     document.getElementById('aLiveUrlShow').textContent=data.url||'';
-    document.getElementById('aLiveFrame').src=getLiveEmbedUrl(data.url||'');
+    const embedUrl=getLiveEmbedUrl(data.url||'');
+    if(embedUrl===null){
+      document.getElementById('aLiveFrame').style.display='none';
+      document.getElementById('igLiveFallback').style.display='block';
+      document.getElementById('igLiveLink').textContent=data.url;
+      document.getElementById('igLiveLink').href=data.url;
+    } else {
+      document.getElementById('aLiveFrame').src=embedUrl;
+    }
   }
 }
 
@@ -1274,22 +1328,28 @@ function renderMemberHome() {
   const m=session;
   const initials=m.name.split(' ').map(w=>w[0]).join('').substr(0,2).toUpperCase();
   document.getElementById('mWelcomeSub').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  const st=m.memberStatus||'no-plan';
+  const stLabel=st==='active'?'Active':st==='no-plan'?'No Plan':st==='pending-payment'?'Pending Payment':'Inactive';
   document.getElementById('mProfileCard').innerHTML=
     '<div class="mprofile"><div class="mavatar">'+initials+'</div><div>'+
-    '<div style="font-size:12px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">ID: '+m.id.slice(0,8).toUpperCase()+'</div>'+
+    '<div style="font-size:12px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">ID: '+(m.id||'').slice(0,8).toUpperCase()+'</div>'+
     '<div class="mname">'+m.name+'</div>'+
     '<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;">'+
     (m.plan?'<span class="mpill">'+PLAN_LABEL[m.plan]+'</span>':'')+
-    '<span class="badge '+(m.memberStatus||'no-plan')+'">'+
-    (m.memberStatus==='active'?'Active':m.memberStatus==='no-plan'?'No Plan':m.memberStatus==='pending-payment'?'Pending Payment':'Inactive')+
-    '</span></div></div></div>';
+    '<span class="badge '+st+'">'+stLabel+'</span>'+
+    '</div></div></div>';
 
-  // Status box based on memberStatus
-  const st=m.memberStatus||'no-plan';
   if(st==='no-plan'||st==='pending-payment') {
     renderGetMembership();
   } else {
-    renderMembershipCard();
+    // Active member — check days left
+    const d = getDaysLeft(m);
+    // Show plan cards ONLY when expiry is within 2 days OR already expired
+    if(d <= 2) {
+      renderRenewalPrompt(d);
+    } else {
+      renderMembershipCard();
+    }
   }
 }
 
@@ -1442,6 +1502,57 @@ async function checkLiveStatus() {
 }
 
 // ══════════════════════════════════════════════════════
+//  RENEWAL PROMPT (shown only when ≤2 days or expired)
+// ══════════════════════════════════════════════════════
+function renderRenewalPrompt(daysLeft) {
+  const m=session;
+  const expired = daysLeft <= 0;
+  document.getElementById('mStatusBox').innerHTML=
+    '<div class="pending-box" style="border-color:rgba('+(expired?'239,68,68':'234,179,8')+',.3);background:rgba('+(expired?'239,68,68':'234,179,8')+',.06);">'+
+    '<h3 style="color:var('+(expired?'--rd':'--yw')+')">'+(expired?'❌ Membership Expired!':'⚠️ Expiring in '+daysLeft+' day(s)!')+'</h3>'+
+    '<p>'+(expired?'Your membership has expired. Renew now to continue training!':'Your membership expires very soon! Choose a plan to renew.')+'</p>'+
+    '<p style="font-size:13px;margin-top:8px;color:var(--mu);">💬 Contact gym: <a href="tel:+919548611898" style="color:var(--p);font-weight:700;">+91 95486 11898</a> or <a href="https://wa.me/919548611898?text=Hi, I need to renew my membership. Name: '+encodeURIComponent(m.name)+'" target="_blank" style="color:var(--p);font-weight:700;">WhatsApp</a></p>'+
+    '</div>';
+  document.getElementById('mMemCard').innerHTML=
+    '<div style="margin-bottom:14px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mu);">🔄 Renew / Select Plan</div>'+
+    '<div class="plan-grid">'+
+      renderPlanCard('monthly','Monthly','800','30','🗓️',false)+
+      renderPlanCard('quarterly','Quarterly','2100','90','⭐',true)+
+      renderPlanCard('annual','Annual','7500','365','🏆',false)+
+    '</div>';
+  document.getElementById('mRecPay').innerHTML='';
+}
+
+// ══════════════════════════════════════════════════════
+//  LIVE PLATFORM SELECTION
+// ══════════════════════════════════════════════════════
+let currentPlatform = 'youtube';
+const platformHelp = {
+  youtube: '<strong style="color:var(--tx);">YouTube Live:</strong><br>1. Open YouTube app → tap + → Go Live<br>2. Start your live → copy the link from share<br>3. Paste link above → Go Live Now',
+  instagram: '<strong style="color:var(--tx);">Instagram Live:</strong><br>1. Open Instagram → tap + → Live<br>2. Start your live session<br>3. Copy your profile link (instagram.com/gymlover_govindshukla70/live) and paste above<br>⚠️ Instagram cannot be embedded — members will get a direct link to open',
+  facebook: '<strong style="color:var(--tx);">Facebook Live:</strong><br>1. Open Facebook → tap Live<br>2. Start your broadcast → copy the video link<br>3. Paste link above → Go Live Now'
+};
+const platformPlaceholder = {
+  youtube: 'https://youtube.com/live/... or youtu.be/...',
+  instagram: 'https://www.instagram.com/gymlover_govindshukla70/live or profile link',
+  facebook: 'https://www.facebook.com/... live video link'
+};
+
+function selectPlatform(p) {
+  currentPlatform = p;
+  document.querySelectorAll('.plat-btn').forEach(b=>b.classList.remove('active-plat'));
+  document.getElementById('plat-'+p).classList.add('active-plat');
+  document.getElementById('platformHelp').innerHTML = platformHelp[p] || '';
+  document.getElementById('aLiveUrl').placeholder = platformPlaceholder[p] || '';
+  document.getElementById('liveUrlLabel').textContent = (p.charAt(0).toUpperCase()+p.slice(1)) + ' Live URL *';
+}
+
+// Init platform help on page load
+function initLivePlatform() {
+  document.getElementById('platformHelp').innerHTML = platformHelp.youtube;
+}
+
+// ══════════════════════════════════════════════════════
 //  PWA & PUSH NOTIFICATIONS
 // ══════════════════════════════════════════════════════
 let deferredInstall=null;
@@ -1552,10 +1663,32 @@ async function pollPushMessages() {
 
 function showBrowserNotif(title,body,type) {
   const t={live:'ok',expiry:'warn',announcement:'info',renewal:'ok'};
+  // Always show in-app float
   floatNotif(title,body,t[type]||'info');
+  // Show in notification bar via Service Worker (works when app is closed/background)
   if(Notification.permission==='granted') {
-    try { new Notification(title,{body,icon:'/icon-192.png',tag:type,requireInteraction:['live','expiry','announcement'].includes(type)}); }
-    catch(e){}
+    if(navigator.serviceWorker && navigator.serviceWorker.controller) {
+      // Use SW to show notification — appears in phone notification bar
+      navigator.serviceWorker.ready.then(reg => {
+        reg.showNotification(title, {
+          body,
+          icon: '/icon-192.png',
+          badge: '/icon-192.png',
+          tag: type||'gym',
+          renotify: true,
+          requireInteraction: ['live','expiry','announcement'].includes(type),
+          vibrate: type==='live'?[300,100,300]:[200,100,200],
+          data: {url:'/portal', type}
+        });
+      }).catch(()=>{
+        // Fallback to basic Notification
+        try { new Notification(title,{body,icon:'/icon-192.png'}); } catch(e){}
+      });
+    } else {
+      // No SW — use basic Notification API
+      try { new Notification(title,{body,icon:'/icon-192.png',tag:type,requireInteraction:['live','expiry','announcement'].includes(type)}); }
+      catch(e){}
+    }
   }
 }
 
