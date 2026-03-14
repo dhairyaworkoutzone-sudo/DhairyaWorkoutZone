@@ -540,6 +540,10 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
         <div class="card-head"><span class="card-title">Recent Payments</span></div>
         <div class="card-scroll"><table><tbody id="recent-pays"></tbody></table></div>
       </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">📅 Monthly Revenue History</span><button class="btn-sm ghost" onclick="loadAdminData()">↻ Refresh</button></div>
+        <div id="rev-history"><div class="empty">Loading…</div></div>
+      </div>
     </div>
 
     <!-- MEMBERS -->
@@ -1348,13 +1352,35 @@ function renderDash() {
   const expiring = allMembers.filter(m => getStatus(m) === 'expiring').length;
   const expired  = allMembers.filter(m => getStatus(m) === 'expired').length;
   const pending  = allMembers.filter(m => ['no-plan','pending','pending-payment'].includes(getStatus(m))).length;
-  const revenue  = allPayments.filter(p => p.status === 'paid').reduce((s,p) => s+p.amount, 0);
+
+  // Revenue: ONLY confirmed paid payments
+  const paidPayments = allPayments.filter(p => p.status === 'paid');
+  const totalRev = paidPayments.reduce((s,p) => s + p.amount, 0);
+
+  // Monthly revenue — current month only
+  const now = new Date();
+  const thisMonthRev = paidPayments.filter(p => {
+    const d = new Date(p.date||p.createdAt);
+    return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+  }).reduce((s,p) => s+p.amount, 0);
+
+  // Monthly revenue history — group by month
+  const monthHistory = {};
+  paidPayments.forEach(p => {
+    const d = new Date(p.date||p.createdAt);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const label = d.toLocaleDateString('en-IN',{month:'short',year:'numeric'});
+    if (!monthHistory[key]) monthHistory[key] = {label, amount:0, count:0};
+    monthHistory[key].amount += p.amount;
+    monthHistory[key].count++;
+  });
+  const monthRows = Object.keys(monthHistory).sort().reverse().slice(0,6);
 
   $('dash-stats').innerHTML = `
     <div class="stat-card c-green"><div class="stat-icon">✅</div><div class="stat-val">${active}</div><div class="stat-lbl">Active</div></div>
     <div class="stat-card c-yellow"><div class="stat-icon">⚠️</div><div class="stat-val">${expiring}</div><div class="stat-lbl">Expiring ≤7d</div></div>
     <div class="stat-card c-red"><div class="stat-icon">❌</div><div class="stat-val">${expired}</div><div class="stat-lbl">Expired</div></div>
-    <div class="stat-card c-orange"><div class="stat-icon">💰</div><div class="stat-val">₹${revenue.toLocaleString('en-IN')}</div><div class="stat-lbl">Revenue</div></div>
+    <div class="stat-card c-orange"><div class="stat-icon">💰</div><div class="stat-val">₹${thisMonthRev.toLocaleString('en-IN')}</div><div class="stat-lbl">This Month</div></div>
   `;
 
   const expiring7 = allMembers.filter(m => getStatus(m)==='expiring').sort((a,b) => getDaysLeft(a)-getDaysLeft(b));
@@ -1362,9 +1388,25 @@ function renderDash() {
     ? expiring7.map(m => `<tr><td><strong>${m.name}</strong></td><td>${m.phone}</td><td><span class="badge badge-expiring">${getDaysLeft(m)} days left</span></td><td><button class="tbl-btn" onclick="openRenew('${m.id}','${m.name}')">🔄 Renew</button></td></tr>`).join('')
     : `<tr><td colspan="4" class="empty">No members expiring soon ✅</td></tr>`;
 
-  $('recent-pays').innerHTML = allPayments.slice(0,5).length
-    ? allPayments.slice(0,5).map(p => `<tr><td>${p.memberName}</td><td>${PLAN_NAME[p.plan]||p.plan}</td><td>₹${p.amount}</td><td>${fmtDate(p.date)}</td><td><span class="badge badge-${p.status}">${p.status}</span></td></tr>`).join('')
-    : `<tr><td colspan="5" class="empty">No payments yet</td></tr>`;
+  $('recent-pays').innerHTML = paidPayments.slice(0,5).length
+    ? paidPayments.slice(0,5).map(p => `<tr><td>${p.memberName}</td><td>${PLAN_NAME[p.plan]||p.plan}</td><td>₹${p.amount}</td><td>${fmtDate(p.date)}</td><td><span class="badge badge-paid">paid</span></td></tr>`).join('')
+    : `<tr><td colspan="5" class="empty">No confirmed payments yet</td></tr>`;
+
+  // Monthly revenue history section
+  const revHistEl = $('rev-history');
+  if (revHistEl && monthRows.length) {
+    revHistEl.innerHTML = monthRows.map(k => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div>
+          <div style="font-size:13px;font-weight:600;">${monthHistory[k].label}</div>
+          <div style="font-size:11px;color:var(--text3);">${monthHistory[k].count} payment(s)</div>
+        </div>
+        <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--green);">₹${monthHistory[k].amount.toLocaleString('en-IN')}</div>
+      </div>`).join('') + `<div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--text3);font-weight:600;letter-spacing:1px;text-transform:uppercase;">Total All Time</span>
+        <span style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--accent);">₹${totalRev.toLocaleString('en-IN')}</span>
+      </div>`;
+  }
 
   setBadge('badge-exp', expiring);
   setBadge('badge-pend', pending);
@@ -1487,8 +1529,10 @@ async function confirmRenew() {
     plan:$('renew-plan').value, paymentDate:$('renew-date').value, paymentStatus:$('renew-status').value
   });
   closeModal('renewModal');
-  if (data.success) { loadAdminData(); toast('🔄 Renewed',`${data.member?.name} renewed.`,'ok'); }
-  else toast('❌ Error',data.message,'danger');
+  if (data.success) {
+    await loadAdminData();
+    toast('🔄 Renewed',`${data.member?.name} renewed.`,'ok');
+  } else toast('❌ Error',data.message,'danger');
 }
 
 function openConfirmPay(id, name) {
@@ -1713,12 +1757,14 @@ async function loadMemberView() {
   $('sb-mem-name').textContent  = S.name;
   $('sb-mem-phone').textContent = S.phone||'';
 
-  // Refresh member from server
-  const mems = await api('GET','/api/members');
-  if (Array.isArray(mems)) {
-    const me = mems.find(x => x.id===S.id);
-    if (me) { Object.assign(S,me); saveSession(S); }
-  }
+  // ALWAYS refresh from server before rendering — fixes "still showing expired after admin renews"
+  try {
+    const mems = await api('GET','/api/members');
+    if (Array.isArray(mems)) {
+      const me = mems.find(x => x.id===S.id);
+      if (me) { Object.assign(S, me); saveSession(S); }
+    }
+  } catch(e) {}
 
   renderHome();
   checkLive();
@@ -1828,8 +1874,45 @@ function planCard(plan,name,price,days,icon,pop) {
     <div class="plan-price"><sup>₹</sup>${price}</div>
     <div class="plan-period">per ${days} days</div>
     <ul class="plan-feats">${feats.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}</ul>
-    <button class="plan-btn" onclick="openPayModal('${plan}',${price},'${name} Membership')">Select Plan</button>
+    <button class="plan-btn" onclick="confirmPlanSelect('${plan}',${price},'${name} Membership')">Select Plan</button>
   </div>`;
+}
+
+function confirmPlanSelect(plan, amount, label) {
+  const planDays = {monthly:30, quarterly:90, annual:365};
+  const ok = confirm(`⚠️ Confirm Plan Selection\n\nPlan: ${label}\nAmount: ₹${amount}\nDuration: ${planDays[plan]} days\n\nOnce selected, you cannot change the plan until it expires.\nThe plan activates only after the gym admin confirms your payment.\n\nProceed?`);
+  if (!ok) return;
+  openPayModal(plan, amount, label);
+  sendRenewalRequest(plan, amount, label);
+}
+
+async function sendRenewalRequest(plan, amount, label) {
+  try {
+    await api('POST','/api/notifications',{
+      type:'info', icon:'🔄',
+      title:`${S.name} wants to renew`,
+      desc:`Phone: ${S.phone} — Selected: ${label} (₹${amount}). Confirm payment to activate.`,
+      adminOnly: true
+    });
+  } catch(e) {}
+}
+
+async function requestRenewalFromAdmin() {
+  const d = getDaysLeft(S);
+  const planName = PLAN_NAME[S.plan] || S.plan || 'current plan';
+  const ok = confirm(`Send renewal request to admin?\n\nThis will notify the gym admin that you want to renew your ${planName} membership.\n\nThey will contact you to confirm payment.`);
+  if (!ok) return;
+  try {
+    await api('POST','/api/notifications',{
+      type:'warn', icon:'🔔',
+      title:`${S.name} requests renewal`,
+      desc:`Phone: ${S.phone} — Current plan: ${planName} — ${d<=0?'EXPIRED':d+' days left'}. Please contact to confirm payment.`,
+      adminOnly: true
+    });
+    toast('✅ Request Sent!','Admin has been notified. They will contact you shortly.','ok');
+  } catch(e) {
+    toast('❌ Failed','Could not send request. Try WhatsApp instead.','danger');
+  }
 }
 
 function renderActiveCard() {
@@ -1859,7 +1942,10 @@ function renderActiveCard() {
         <span>${PLAN_NAME[m.plan]||m.plan}</span>
       </div>
       ${d<=7&&d>2?`<div style="margin-top:12px;padding:11px 14px;background:var(--accent-dim);border:1px solid rgba(255,60,0,0.2);border-radius:9px;font-size:13px;color:var(--accent);">⚠️ Expiring in ${d} days — <a href="https://wa.me/919548611898" target="_blank" style="color:var(--accent);font-weight:700;">WhatsApp to Renew</a></div>`:''}
-      ${d<=0?`<div style="margin-top:12px;"><button class="btn" onclick="memberNav('home');renderRenewalCards()">🔄 Renew Membership</button></div>`:''}
+      ${d<=0?`<div style="margin-top:12px;padding:11px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:9px;font-size:13px;color:var(--red);">❌ Expired — contact gym to renew</div>`:''}
+      <div style="margin-top:12px;">
+        <button class="btn" style="background:transparent;border:1px solid var(--border2);color:var(--text2);font-size:13px;padding:10px;" onclick="requestRenewalFromAdmin()">📨 Request Renewal Confirmation from Admin</button>
+      </div>
     </div>`;
   // Recent payments (paid only)
   api('GET',`/api/payments/member/${m.id}`).then(pays => {
