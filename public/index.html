@@ -901,6 +901,10 @@ footer {
   .insta-posts-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+@media(max-width:600px){
+  #member-portal .login-grid{grid-template-columns:1fr!important;}
+  #member-portal .feat-grid{grid-template-columns:1fr 1fr!important;}
+}
 /* ─── LIVE STREAM ─────────────────────────────────────── */
 .live-wrap {
   display: grid;
@@ -1628,7 +1632,7 @@ footer {
   <div style="text-align:center; margin-bottom:48px;">
     <div class="section-label">🔴 Gym Live</div>
     <h2 class="section-title">Watch Us Live</h2>
-    <p class="section-sub" style="margin:0 auto;">When admin starts a live session, it appears here automatically. Login to your member account to watch.</p>
+    <p class="section-sub" style="margin:0 auto;">Watch live gym sessions — no login required. Anyone can watch! Members get instant notifications. 🔴</p>
   </div>
 
   <div class="live-wrap">
@@ -1637,11 +1641,16 @@ footer {
         <div class="live-placeholder" id="livePlaceholder">
           <div class="live-pulse-ring"></div>
           <div class="live-icon" id="liveIconEl">📴</div>
-          <h3 id="liveStatusH3">No Live Stream Active</h3>
-          <p id="liveStatusP">The gym will go live during sessions. You'll see the stream here automatically when admin is broadcasting.</p>
-          <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;justify-content:center;">
-            <a href="/portal" class="btn-primary" style="text-decoration:none;padding:12px 24px;">🔐 Member Login</a>
-            <a href="/portal" class="btn-outline" style="text-decoration:none;padding:12px 24px;" onclick="localStorage.setItem('gym_portal_hint','admin')">⚙️ Admin Panel</a>
+          <h3 id="liveStatusH3">No Live Stream Right Now</h3>
+          <p id="liveStatusP">Check back during session hours. Stream appears here automatically for everyone!</p>
+          <div style="margin-top:14px;padding:10px 18px;background:rgba(255,255,255,.04);border-radius:10px;font-size:13px;color:var(--text-muted);">
+            🕐 Morning: 5 AM – 10 AM &nbsp;|&nbsp; 🌆 Evening: 4 PM – 10 PM
+          </div>
+        </div>
+        <!-- Live embed (public, no login needed) -->
+        <div id="publicLiveOn" style="display:none;width:100%;height:100%;position:relative;">
+          <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:16px;">
+            <iframe id="publicLiveFrame" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>
           </div>
         </div>
         <video id="liveVideo" autoplay playsinline style="display:none; width:100%; height:100%; object-fit:cover; border-radius:16px;"></video>
@@ -1673,7 +1682,7 @@ footer {
   </div>
 
   <p style="text-align:center; color:var(--text-muted); font-size:13px; margin-top:24px;">
-    🔴 Live stream is broadcast by admin from the <a href="/portal" style="color:var(--primary);">Member Portal</a> — only admin can start a stream.
+    🔴 Live streams are visible to everyone. <a href="/portal" style="color:var(--primary);">Member login</a> gives you membership tracking, payment history &amp; more.
   </p>
 </section>
 
@@ -1727,6 +1736,55 @@ footer {
 </section>
 
 <!-- FOOTER -->
+
+<!-- ═══════════════════════════════════════════════════════
+     MEMBER PORTAL SECTION (Login + Plans)
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="member-portal" style="background:linear-gradient(180deg,transparent,rgba(255,60,0,0.04),transparent);">
+  <div style="text-align:center;margin-bottom:48px;">
+    <div class="section-label">🔐 Member Portal</div>
+    <h2 class="section-title">Your Gym Account</h2>
+    <p class="section-sub" style="margin:0 auto;">Track membership, payments, watch live sessions, get notifications — all free.</p>
+  </div>
+
+  <!-- Login Cards -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:680px;margin:0 auto 48px;">
+    <div style="background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px 24px;text-align:center;cursor:pointer;transition:.3s;"
+         onmouseover="this.style.borderColor='rgba(255,60,0,0.5)';this.style.transform='translateY(-4px)'"
+         onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.transform='translateY(0)'"
+         onclick="window.location.href='/portal'">
+      <div style="font-size:52px;margin-bottom:16px;">👤</div>
+      <div style="font-family:var(--font-display);font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Member Login</div>
+      <p style="color:var(--text-muted);font-size:13px;line-height:1.7;margin-bottom:24px;">View membership status · Payment history · Watch live · Get notifications</p>
+      <a href="/portal" class="btn-primary" style="text-decoration:none;display:inline-block;padding:13px 32px;font-size:16px;border-radius:10px;">Login / Sign Up →</a>
+    </div>
+    <div style="background:rgba(255,60,0,0.05);border:2px solid rgba(255,60,0,0.25);border-radius:20px;padding:32px 24px;text-align:center;cursor:pointer;transition:.3s;"
+         onmouseover="this.style.borderColor='rgba(255,60,0,0.6)';this.style.transform='translateY(-4px)'"
+         onmouseout="this.style.borderColor='rgba(255,60,0,0.25)';this.style.transform='translateY(0)'"
+         onclick="window.location.href='/portal'">
+      <div style="font-size:52px;margin-bottom:16px;">⚙️</div>
+      <div style="font-family:var(--font-display);font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;color:var(--primary);">Admin Panel</div>
+      <p style="color:var(--text-muted);font-size:13px;line-height:1.7;margin-bottom:24px;">Manage members · Track payments · Go live · Send announcements</p>
+      <a href="/portal" class="btn-outline" style="text-decoration:none;display:inline-block;padding:13px 32px;font-size:16px;border-radius:10px;" onclick="event.stopPropagation()">Admin Login →</a>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px;text-align:center;">
+      <div style="font-size:28px;margin-bottom:8px;">📊</div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Membership</div><div style="font-size:12px;color:var(--text-muted);">Days left & status</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px;text-align:center;">
+      <div style="font-size:28px;margin-bottom:8px;">🔔</div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Notifications</div><div style="font-size:12px;color:var(--text-muted);">Expiry & live alerts</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px;text-align:center;">
+      <div style="font-size:28px;margin-bottom:8px;">💳</div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Payments</div><div style="font-size:12px;color:var(--text-muted);">Full history</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px;text-align:center;">
+      <div style="font-size:28px;margin-bottom:8px;">📢</div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Announcements</div><div style="font-size:12px;color:var(--text-muted);">From gym owner</div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
@@ -2021,6 +2079,54 @@ function sendChat() {
 
 
 // Instagram section — direct link to @gymlover_govindshukla70
+
+// ─── PUBLIC LIVE STATUS CHECK ─────────────────────────────
+function getLiveEmbedUrl(url) {
+  if (!url) return '';
+  const yt = url.match(/(?:youtube\.com\/live\/|youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
+  if (yt) return 'https://www.youtube.com/embed/' + yt[1] + '?autoplay=1&rel=0';
+  if (url.includes('facebook.com') || url.includes('fb.watch'))
+    return 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(url) + '&autoplay=1&show_text=0';
+  return url;
+}
+async function checkPublicLive() {
+  try {
+    const r = await fetch('/api/live/status');
+    const data = await r.json();
+    const ph = document.getElementById('livePlaceholder');
+    const on = document.getElementById('publicLiveOn');
+    const frame = document.getElementById('publicLiveFrame');
+    const badge = document.getElementById('liveBadgeWrap');
+    const h3 = document.getElementById('liveStatusH3');
+    if (data && data.live && data.url) {
+      if (ph) ph.style.display = 'none';
+      if (on) on.style.display = 'block';
+      if (frame) { const src = getLiveEmbedUrl(data.url); if (frame.src !== src) frame.src = src; }
+      if (badge) badge.style.display = 'flex';
+      if (h3) h3.textContent = data.title || 'Live Now 🔴';
+    } else {
+      if (ph) ph.style.display = 'flex';
+      if (on) on.style.display = 'none';
+      if (frame) frame.src = '';
+      if (badge) badge.style.display = 'none';
+    }
+  } catch(e) {}
+}
+checkPublicLive();
+setInterval(checkPublicLive, 15000); // check every 15s
+
+// Add Member Portal to nav
+document.addEventListener('DOMContentLoaded', () => {
+  const nav = document.querySelector('.nav-links');
+  if (nav && !nav.querySelector('[href="#member-portal"]')) {
+    const li = document.createElement('a');
+    li.href = '#member-portal';
+    li.className = 'cta-nav';
+    li.textContent = '🔐 Member Portal';
+    li.style.cssText = 'background:var(--primary);color:white;padding:8px 18px;border-radius:8px;font-weight:700;';
+    nav.appendChild(li);
+  }
+});
 
 // ─── PAYMENT ──────────────────────────────────────────────
 const PLAN_NAMES = {800:'Monthly Membership',2100:'Quarterly Membership',7500:'Annual Membership'};
