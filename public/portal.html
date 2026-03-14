@@ -48,12 +48,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);overflow-x:hid
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 
 /* ══ VIEWS — only one visible at a time ══ */
-.view{display:none;min-height:100vh;}
-.view.active{display:block;}
-#authView{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:var(--bg);position:relative;overflow:hidden;}
+/* VIEW SYSTEM — all views hidden by default, .active shows them */
+.view{display:none !important;min-height:100vh;}
+#authView.active{display:flex !important;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:var(--bg);position:relative;overflow:hidden;}
 #authView::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,60,0,0.12),transparent);pointer-events:none;}
-#adminView,#memberView{display:none;flex-direction:row;}
-#adminView.active,#memberView.active{display:flex;}
+#adminView.active{display:flex !important;flex-direction:row;}
+#memberView.active{display:flex !important;flex-direction:row;}
 
 /* ══ AUTH ══ */
 .auth-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px 32px;width:100%;max-width:420px;position:relative;z-index:1;}
@@ -399,7 +399,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 <!-- ══════════════════════════════════════════
      AUTH VIEW
 ══════════════════════════════════════════ -->
-<div class="view active" id="authView">
+<div class="view" id="authView">
   <div class="auth-card">
     <div class="auth-logo">
       <div class="auth-logo-title">The Brothers Gym</div>
@@ -415,7 +415,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
       <div class="fg"><label>Phone Number</label><input id="l-phone" type="tel" placeholder="98765 43210" oninput="numOnly(this)" inputmode="numeric"></div>
       <div class="fg"><label>Password</label>
         <div class="pw-wrap">
-          <input id="l-pass" type="password" placeholder="Enter password" onkeydown="if(e.key==='Enter')doLogin()" onkeydown="if(event.key==='Enter')doLogin()">
+          <input id="l-pass" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
           <button class="pw-eye" type="button" onclick="togglePw('l-pass',this)">👁</button>
         </div>
       </div>
@@ -1312,6 +1312,8 @@ function doLogout() {
   clearInterval(window._liveTimer);
   clearInterval(window._pollTimer);
   clearInterval(window._refreshTimer);
+  clearTimeout(window._midnightTimer);
+  window._midnightTimer = null;
   saveSession(null);
   showView('auth');
   switchTab('login');
@@ -1836,13 +1838,15 @@ function renderActiveCard() {
   const d = getDaysLeft(m), exp = getExpiry(m);
   const pct = Math.max(0,Math.min(100,(d/PLAN_DAYS[m.plan])*100));
   const cls = d<=3?'danger':d<=7?'warn':'';
+  // Daily tracking label
+  const trackMsg = d<=0 ? 'Membership expired!' : d===1 ? '⚠️ Last day! Renew immediately.' : d<=3 ? `🚨 Only ${d} days left! Renew now.` : d<=7 ? `⏰ ${d} days left — expiring soon.` : `${d} days remaining`;
   $('m-status-box').innerHTML = '';
   $('m-mem-card').innerHTML = `
     <div class="prog-wrap">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;">
         <div>
           <div class="days-big ${cls}">${d<=0?'EXPIRED':d}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${d<=0?'Expired — contact gym':'days remaining'}</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:4px;">${trackMsg}</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:11px;color:var(--text3);">Expires on</div>
@@ -1855,6 +1859,7 @@ function renderActiveCard() {
         <span>${PLAN_NAME[m.plan]||m.plan}</span>
       </div>
       ${d<=7&&d>2?`<div style="margin-top:12px;padding:11px 14px;background:var(--accent-dim);border:1px solid rgba(255,60,0,0.2);border-radius:9px;font-size:13px;color:var(--accent);">⚠️ Expiring in ${d} days — <a href="https://wa.me/919548611898" target="_blank" style="color:var(--accent);font-weight:700;">WhatsApp to Renew</a></div>`:''}
+      ${d<=0?`<div style="margin-top:12px;"><button class="btn" onclick="memberNav('home');renderRenewalCards()">🔄 Renew Membership</button></div>`:''}
     </div>`;
   // Recent payments (paid only)
   api('GET',`/api/payments/member/${m.id}`).then(pays => {
@@ -1865,6 +1870,43 @@ function renderActiveCard() {
         : `<div class="empty">No confirmed payments yet.</div>`}
     </div>`;
   });
+  // Schedule the daily midnight refresh
+  scheduleMidnightRefresh();
+}
+
+// Schedules a refresh exactly at midnight so days-left ticks down automatically
+function scheduleMidnightRefresh() {
+  if (window._midnightTimer) return; // already scheduled
+  const now = new Date();
+  const msToMidnight = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,5).getTime() - now.getTime();
+  window._midnightTimer = setTimeout(async () => {
+    window._midnightTimer = null;
+    // Refresh member data from server
+    const mems = await api('GET','/api/members');
+    if (Array.isArray(mems)) {
+      const me = mems.find(x => x.id===S?.id);
+      if (me) { Object.assign(S,me); saveSession(S); }
+    }
+    // Trigger daily expiry check
+    api('POST','/api/notifications/check-expiry');
+    // Re-render home
+    renderHome();
+    // Show daily toast
+    const d = getDaysLeft(S);
+    if (d !== -999) {
+      if (d<=0)      toast('❌ Membership Expired!','Contact gym to renew today.','danger');
+      else if (d===1) toast('🚨 Last Day!','Your membership expires today!','danger');
+      else if (d<=3) toast(`🚨 ${d} days left!`,'Renew your membership now.','danger');
+      else if (d<=7) toast(`⚠️ ${d} days left`,'Plan your membership renewal.','warn');
+    }
+    // Re-schedule for next midnight
+    scheduleMidnightRefresh();
+  }, msToMidnight);
+}
+
+function renderRenewalCards() {
+  // Force show plan grid on home page (for expired members who click Renew button)
+  renderRenewPrompt(getDaysLeft(S));
 }
 
 function renderMembershipFull() {
@@ -2101,13 +2143,15 @@ function startPoll() {
 //  INIT
 // ════════════════════════════════════════
 (function init() {
+  // Always show auth first (prevents blank screen)
+  showView('auth');
   // Set today's date as default for add member form
   const amDate = $('am-date'); if (amDate) amDate.value = todayStr();
   const cpDate = $('cp-date'); if (cpDate) cpDate.value = todayStr();
   const rdDate = $('renew-date'); if (rdDate) rdDate.value = todayStr();
   selPlatform('youtube');
   initPWA();
-  if (!S) { showView('auth'); return; }
+  if (!S) return; // stay on auth
   if (S.type === 'admin') loadAdminView();
   else loadMemberView();
 })();
