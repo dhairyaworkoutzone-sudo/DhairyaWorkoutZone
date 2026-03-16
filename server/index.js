@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════
-//  Dhairya-Workout-Zone Portal — Express Backend  v6.0
+//  Dhairya Workout Zone Portal — Express Backend  v6.0
 //  MongoDB Atlas | Screen OTP | PWA Push | Announcements
 // ════════════════════════════════════════════════════════
 require('dotenv').config();
@@ -111,14 +111,14 @@ async function connectDB() {
   const client = new MongoClient(uri, {serverSelectionTimeoutMS:30000, connectTimeoutMS:30000});
   await client.connect();
   await client.db('admin').command({ping:1});
-  db = client.db('Dhairya-Workout-Zone_gym');
+  db = client.db('dhairya_gym');
   await db.collection('members').createIndex({phone:1},{unique:true});
   await db.collection('payments').createIndex({memberId:1});
   await db.collection('payments').createIndex({createdAt:-1});
   await db.collection('notifications').createIndex({time:-1});
   await db.collection('announcements').createIndex({createdAt:-1});
   await db.collection('push_queue').createIndex({createdAt:1},{expireAfterSeconds:86400});
-  console.log('✅  MongoDB Atlas connected — Dhairya-Workout-Zone_gym database ready');
+  console.log('✅  MongoDB Atlas connected — dhairya_gym database ready');
 }
 
 // ════════════════════════════════════════════════════════
@@ -370,7 +370,7 @@ app.post('/api/members/:id/confirm-payment', requireDB, async (req,res) => {
     if (!m) return res.json({success:false, message:'Member not found.'});
     await addPayment({memberId:m.id, memberName:m.name, phone:m.phone, plan:usePlan, amount:PLAN_PRICE[usePlan]||0, date:today, status:'paid'});
     await addNotification({type:'success', icon:'✅', title:m.name+' membership activated!', desc:'Plan: '+usePlan+' · Confirmed by admin', memberId:m.id});
-    await queuePush({type:'renewal', title:'🎉 Membership Activated!', body:'Welcome to Dhairya-Workout-Zone! Your '+usePlan+' membership is now active. 💪', url:'/portal'}, m.phone);
+    await queuePush({type:'renewal', title:'🎉 Membership Activated!', body:'Welcome to Dhairya Workout Zone! Your '+usePlan+' membership is now active. 💪', url:'/portal'}, m.phone);
     res.json({success:true, member:sanitize(m)});
   } catch(e) { res.json({success:false, message:'Server error.'}); }
 });
@@ -612,7 +612,7 @@ app.post('/api/push/mark-delivered', requireDB, async (req,res) => {
 
 // ── Utility ────────────────────────────────────────────────
 app.get('/api/status', (req,res) => res.json({dbConnected:!!db, server:'ok', time:new Date().toISOString()}));
-app.get('/ping',       (req,res) => res.json({status:'ok', time:new Date().toISOString(), gym:'Dhairya-Workout-Zone Agra 💪'}));
+app.get('/ping',       (req,res) => res.json({status:'ok', time:new Date().toISOString(), gym:'Dhairya Workout Zone Mathura 💪'}));
 app.get('/health',     (req,res) => res.json({status:'healthy'}));
 app.get('/api/sms-test', (req,res) => res.json({message:'OTP is shown on screen — no SMS service needed!', mode:'screen-otp'}));
 
@@ -620,7 +620,7 @@ app.get('/api/sms-test', (req,res) => res.json({message:'OTP is shown on screen 
 //  START — HTTP first, then DB
 // ════════════════════════════════════════════════════════
 app.listen(PORT, '0.0.0.0', () => {
-  console.log('\n🏋️   Dhairya-Workout-Zone HTTP server started on port ' + PORT);
+  console.log('\n🏋️   Dhairya Workout Zone HTTP server started on port ' + PORT);
   console.log('\n🔍  Environment check:');
   console.log('    MONGO_URI  :', process.env.MONGO_URI  ? '✅ "'+process.env.MONGO_URI.substring(0,40)+'..."' : '❌ NOT SET');
   console.log('    MONGO_USER :', process.env.MONGO_USER || '❌ NOT SET');

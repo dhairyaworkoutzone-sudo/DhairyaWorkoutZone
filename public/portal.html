@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Dhairya-Workout-Zone — Portal</title>
+<title>Dhairya Workout Zone — Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#ff3c00">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Dhairya-Workout-Zone">
+<meta name="apple-mobile-web-app-title" content="DhairyaGym">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <style>
 /* ══════════════════════════════════════════
@@ -387,7 +387,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 <div class="pwa-bar" id="pwaBanner">
   <div style="font-size:30px">💪</div>
   <div style="flex:1">
-    <strong style="display:block;font-size:14px;">Install Dhairya-Workout-Zone App</strong>
+    <strong style="display:block;font-size:14px;">Install Dhairya Workout Zone App</strong>
     <span style="font-size:12px;color:var(--text3);">Add to home screen for push notifications</span>
   </div>
   <button class="btn-sm" onclick="installPWA()">Install</button>
@@ -402,7 +402,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 <div class="view" id="authView">
   <div class="auth-card">
     <div class="auth-logo">
-      <div class="auth-logo-title">The Dhairya-Workout-Zone</div>
+      <div class="auth-logo-title">The Dhairya Workout Zone</div>
       <div class="auth-logo-sub">Member &amp; Admin Portal</div>
     </div>
     <div class="auth-tabs">
@@ -484,7 +484,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
   <aside class="sidebar" id="adminSb">
     <div class="sb-logo">
       <div class="sb-logo-name">Admin Panel</div>
-      <div class="sb-logo-sub">Dhairya-Workout-Zone</div>
+      <div class="sb-logo-sub">Dhairya Workout Zone</div>
     </div>
     <nav class="sb-nav" id="adminNav">
       <div class="ni active" data-p="a-dashboard" onclick="adminNav('dashboard')">
@@ -517,7 +517,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     </nav>
     <div class="sb-footer">
       <div class="sb-user-name">Admin</div>
-      <div class="sb-user-phone">Dhairya-Workout-Zone Owner</div>
+      <div class="sb-user-phone">Dhairya Workout Zone Owner</div>
       <button class="sb-logout" onclick="doLogout()">Logout</button>
     </div>
   </aside>
@@ -741,7 +741,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
   <aside class="sidebar" id="memberSb">
     <div class="sb-logo">
       <div class="sb-logo-name">My Gym</div>
-      <div class="sb-logo-sub">Dhairya-Workout-Zone Portal</div>
+      <div class="sb-logo-sub">Dhairya Workout Zone Portal</div>
     </div>
     <nav class="sb-nav" id="memberNav">
       <div class="ni active" data-p="m-home" onclick="memberNav('home')">
@@ -837,7 +837,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
           <div id="m-ig-card" style="display:none;padding:36px;text-align:center;">
             <div style="font-size:52px;margin-bottom:12px;">📸</div>
             <div style="font-family:var(--fd);font-size:20px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">Instagram Live!</div>
-            <a id="m-ig-link" href="https://instagram.com/dhairyaworkoutzone" target="_blank" class="btn" style="text-decoration:none;display:inline-block;width:auto;padding:12px 28px;">📸 Open Instagram Live</a>
+            <a id="m-ig-link" href="https://instagram.com/gymlover_govindshukla70" target="_blank" class="btn" style="text-decoration:none;display:inline-block;width:auto;padding:12px 28px;">📸 Open Instagram Live</a>
           </div>
           <div style="padding:9px 16px;border-top:1px solid var(--border);">
             <a id="m-live-ext" href="#" target="_blank" style="font-size:12px;color:var(--accent);font-weight:600;text-decoration:none;">▶ Open externally ↗</a>
@@ -1655,7 +1655,7 @@ const platHelp = {
 };
 const platPH = {
   youtube:'https://youtube.com/live/… or youtu.be/…',
-  instagram:'https://instagram.com/dhairyaworkoutzone',
+  instagram:'https://instagram.com/gymlover_govindshukla70',
   facebook:'https://facebook.com/… live video link'
 };
 function selPlatform(p) {
@@ -1699,7 +1699,7 @@ async function adminGoLive() {
     $('live-frame').src = emb;
     toast('🔴 You are LIVE!','Everyone can watch now.','ok');
   }
-  addChat('a-chat','Dhairya-Workout-Zone 🏋️','🔴 Stream started! 💪');
+  addChat('a-chat','DhairyaGym 🏋️','🔴 Stream started! 💪');
 }
 
 async function adminStopLive() {
@@ -2087,7 +2087,7 @@ async function checkLive() {
       if (emb===null) {
         $('m-yt-fb').style.display  = 'none';
         $('m-ig-card').style.display= 'block';
-        const lnk = $('m-ig-link'); if (lnk) lnk.href = data.url||'https://instagram.com/dhairyaworkoutzone';
+        const lnk = $('m-ig-link'); if (lnk) lnk.href = data.url||'https://instagram.com/gymlover_govindshukla70';
         $('m-live-ext').textContent = '📸 Open on Instagram'; $('m-live-ext').href = data.url||'#';
       } else {
         $('m-yt-fb').style.display  = 'block';
@@ -2132,7 +2132,7 @@ function openUPIApp() {
 let deferredInstall = null;
 
 function initPWA() {
-  const realDomain = location.hostname.includes('onrender.com')||location.hostname.includes('Dhairya-Workout-Zone')||location.hostname==='localhost';
+  const realDomain = location.hostname.includes('onrender.com')||location.hostname.includes('dhairyagym')||location.hostname==='localhost';
   if ('serviceWorker' in navigator && realDomain) {
     navigator.serviceWorker.register('/sw.js').then(reg => {
       swReg = reg;
