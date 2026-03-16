@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Brothers Gym — Portal</title>
+<title>Dhairya-Workout-Zone — Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#ff3c00">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="BrothersGym">
+<meta name="apple-mobile-web-app-title" content="Dhairya-Workout-Zone">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <style>
 /* ══════════════════════════════════════════
@@ -387,7 +387,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 <div class="pwa-bar" id="pwaBanner">
   <div style="font-size:30px">💪</div>
   <div style="flex:1">
-    <strong style="display:block;font-size:14px;">Install Brothers Gym App</strong>
+    <strong style="display:block;font-size:14px;">Install Dhairya-Workout-Zone App</strong>
     <span style="font-size:12px;color:var(--text3);">Add to home screen for push notifications</span>
   </div>
   <button class="btn-sm" onclick="installPWA()">Install</button>
@@ -402,7 +402,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 <div class="view" id="authView">
   <div class="auth-card">
     <div class="auth-logo">
-      <div class="auth-logo-title">The Brothers Gym</div>
+      <div class="auth-logo-title">The Dhairya-Workout-Zone</div>
       <div class="auth-logo-sub">Member &amp; Admin Portal</div>
     </div>
     <div class="auth-tabs">
@@ -484,7 +484,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
   <aside class="sidebar" id="adminSb">
     <div class="sb-logo">
       <div class="sb-logo-name">Admin Panel</div>
-      <div class="sb-logo-sub">Brothers Gym</div>
+      <div class="sb-logo-sub">Dhairya-Workout-Zone</div>
     </div>
     <nav class="sb-nav" id="adminNav">
       <div class="ni active" data-p="a-dashboard" onclick="adminNav('dashboard')">
@@ -517,7 +517,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     </nav>
     <div class="sb-footer">
       <div class="sb-user-name">Admin</div>
-      <div class="sb-user-phone">Brothers Gym Owner</div>
+      <div class="sb-user-phone">Dhairya-Workout-Zone Owner</div>
       <button class="sb-logout" onclick="doLogout()">Logout</button>
     </div>
   </aside>
@@ -741,7 +741,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
   <aside class="sidebar" id="memberSb">
     <div class="sb-logo">
       <div class="sb-logo-name">My Gym</div>
-      <div class="sb-logo-sub">Brothers Gym Portal</div>
+      <div class="sb-logo-sub">Dhairya-Workout-Zone Portal</div>
     </div>
     <nav class="sb-nav" id="memberNav">
       <div class="ni active" data-p="m-home" onclick="memberNav('home')">
@@ -1699,7 +1699,7 @@ async function adminGoLive() {
     $('live-frame').src = emb;
     toast('🔴 You are LIVE!','Everyone can watch now.','ok');
   }
-  addChat('a-chat','BrothersGym 🏋️','🔴 Stream started! 💪');
+  addChat('a-chat','Dhairya-Workout-Zone 🏋️','🔴 Stream started! 💪');
 }
 
 async function adminStopLive() {
@@ -2132,7 +2132,7 @@ function openUPIApp() {
 let deferredInstall = null;
 
 function initPWA() {
-  const realDomain = location.hostname.includes('onrender.com')||location.hostname.includes('brothersgym')||location.hostname==='localhost';
+  const realDomain = location.hostname.includes('onrender.com')||location.hostname.includes('Dhairya-Workout-Zone')||location.hostname==='localhost';
   if ('serviceWorker' in navigator && realDomain) {
     navigator.serviceWorker.register('/sw.js').then(reg => {
       swReg = reg;

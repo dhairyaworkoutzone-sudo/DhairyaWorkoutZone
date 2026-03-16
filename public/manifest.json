@@ -1,7 +1,7 @@
 {
-  "name": "Brothers Gym Portal",
-  "short_name": "BrothersGym",
-  "description": "The Brothers Unisex Gym — Member & Admin Portal",
+  "name": "Dhairya-Workout-Zone Portal",
+  "short_name": "Dhairya-Workout-Zone",
+  "description": "The Dhairya-Workout-Zone — Member & Admin Portal",
   "start_url": "/portal",
   "display": "standalone",
   "background_color": "#090b0f",

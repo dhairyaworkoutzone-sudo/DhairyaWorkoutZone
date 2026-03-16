@@ -1,7 +1,7 @@
-// Brothers Gym — Service Worker v3
+// Dhairya-Workout-Zone — Service Worker v3
 // Handles: Push notifications, offline cache, background sync
 
-const CACHE = 'brothers-gym-v3';
+const CACHE = 'Dhairya-Workout-Zone-gym-v3';
 const OFFLINE_URLS = ['/portal', '/manifest.json', '/icon-192.png'];
 
 // ── Install ──────────────────────────────────────────────
@@ -46,7 +46,7 @@ self.addEventListener('fetch', e => {
 // Fires when server sends a push (or polled notification triggers it)
 self.addEventListener('push', e => {
   let data = {
-    title: 'Brothers Gym 💪',
+    title: 'Dhairya-Workout-Zone 💪',
     body: 'You have a new notification',
     type: 'info',
     url: '/portal'
@@ -75,7 +75,7 @@ self.addEventListener('push', e => {
   };
 
   e.waitUntil(
-    self.registration.showNotification(data.title || 'Brothers Gym 💪', options)
+    self.registration.showNotification(data.title || 'Dhairya-Workout-Zone 💪', options)
   );
 });
 
@@ -144,7 +144,7 @@ async function pollNotifications() {
     const msgs = await res.json();
     if (!Array.isArray(msgs) || !msgs.length) return;
     for (const m of msgs) {
-      await self.registration.showNotification(m.title || 'Brothers Gym 💪', {
+      await self.registration.showNotification(m.title || 'Dhairya-Workout-Zone 💪', {
         body:   m.body,
         icon:   '/icon-192.png',
         badge:  '/icon-192.png',
