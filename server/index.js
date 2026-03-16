@@ -120,14 +120,14 @@ async function connectDB() {
   const client = new MongoClient(uri, {serverSelectionTimeoutMS:30000, connectTimeoutMS:30000});
   await client.connect();
   await client.db('admin').command({ping:1});
-  db = client.db('brothers_gym');
+  db = client.db('dhairyaworkoutzone');
   await db.collection('members').createIndex({phone:1},{unique:true});
   await db.collection('payments').createIndex({memberId:1});
   await db.collection('payments').createIndex({createdAt:-1});
   await db.collection('notifications').createIndex({time:-1});
   await db.collection('announcements').createIndex({createdAt:-1});
   await db.collection('push_queue').createIndex({createdAt:1},{expireAfterSeconds:86400});
-  console.log('✅  MongoDB Atlas connected — brothers_gym database ready');
+  console.log('✅  MongoDB Atlas connected — dhairyaworkoutzone database ready');
 }
 
 // ════════════════════════════════════════════════════════
