@@ -4,8 +4,8 @@
 <!-- Phone: 8979890960 -->
 <!-- Instagram: https://www.instagram.com/dhairyaworkoutzone/ -->
 <!-- UPI: dhakarshivendra1@ibl -->
-<!-- Coordinates: 27.1958304,77.9629307 -->
-<!-- Google Maps: https://www.google.com/maps/place/Dhairya+Workout+Zone/@27.1958304,77.9629307 -->
+<!-- Coordinates: 27.1982153,77.9391066 -->
+<!-- Google Maps: https://www.google.com/maps/place/Dhairya+Workout+Zone/@27.1982153,77.9391066 -->
 
 // ════════════════════════════════════════════════════════
 //  Dhairya Workout Zone Portal — Express Backend  v6.0
