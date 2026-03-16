@@ -1,3 +1,12 @@
+
+<!-- Dhairya Workout Zone Info -->
+<!-- Address: Shri Bihari G Palace, Sector 7, Lohamandi, Agra, Uttar Pradesh 282007 -->
+<!-- Phone: 8979890960 -->
+<!-- Instagram: https://www.instagram.com/dhairyaworkoutzone/ -->
+<!-- UPI: dhakarshivendra1@ibl -->
+<!-- Coordinates: 27.1958304,77.9629307 -->
+<!-- Google Maps: https://www.google.com/maps/place/Dhairya+Workout+Zone/@27.1958304,77.9629307 -->
+
 // ════════════════════════════════════════════════════════
 //  Dhairya Workout Zone Portal — Express Backend  v6.0
 //  MongoDB Atlas | Screen OTP | PWA Push | Announcements
@@ -86,7 +95,7 @@ function requireDB(req,res,next) {
   next();
 }
 
-const PLAN_PRICE = {monthly:800, quarterly:2100, annual:7500};
+const PLAN_PRICE = {monthly:1200, quarterly:3600, annual:12000};
 const PLAN_DAYS  = {monthly:30,  quarterly:90,   annual:365};
 
 function sanitize(m) {
@@ -111,14 +120,14 @@ async function connectDB() {
   const client = new MongoClient(uri, {serverSelectionTimeoutMS:30000, connectTimeoutMS:30000});
   await client.connect();
   await client.db('admin').command({ping:1});
-  db = client.db('dhairya_gym');
+  db = client.db('brothers_gym');
   await db.collection('members').createIndex({phone:1},{unique:true});
   await db.collection('payments').createIndex({memberId:1});
   await db.collection('payments').createIndex({createdAt:-1});
   await db.collection('notifications').createIndex({time:-1});
   await db.collection('announcements').createIndex({createdAt:-1});
   await db.collection('push_queue').createIndex({createdAt:1},{expireAfterSeconds:86400});
-  console.log('✅  MongoDB Atlas connected — dhairya_gym database ready');
+  console.log('✅  MongoDB Atlas connected — brothers_gym database ready');
 }
 
 // ════════════════════════════════════════════════════════
@@ -612,7 +621,7 @@ app.post('/api/push/mark-delivered', requireDB, async (req,res) => {
 
 // ── Utility ────────────────────────────────────────────────
 app.get('/api/status', (req,res) => res.json({dbConnected:!!db, server:'ok', time:new Date().toISOString()}));
-app.get('/ping',       (req,res) => res.json({status:'ok', time:new Date().toISOString(), gym:'Dhairya Workout Zone Mathura 💪'}));
+app.get('/ping',       (req,res) => res.json({status:'ok', time:new Date().toISOString(), gym:'Dhairya Workout Zone Agra 💪'}));
 app.get('/health',     (req,res) => res.json({status:'healthy'}));
 app.get('/api/sms-test', (req,res) => res.json({message:'OTP is shown on screen — no SMS service needed!', mode:'screen-otp'}));
 
