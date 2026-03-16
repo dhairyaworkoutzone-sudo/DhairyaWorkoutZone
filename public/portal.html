@@ -837,7 +837,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
           <div id="m-ig-card" style="display:none;padding:36px;text-align:center;">
             <div style="font-size:52px;margin-bottom:12px;">📸</div>
             <div style="font-family:var(--fd);font-size:20px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">Instagram Live!</div>
-            <a id="m-ig-link" href="https://instagram.com/gymlover_govindshukla70" target="_blank" class="btn" style="text-decoration:none;display:inline-block;width:auto;padding:12px 28px;">📸 Open Instagram Live</a>
+            <a id="m-ig-link" href="https://instagram.com/dhairyaworkoutzone" target="_blank" class="btn" style="text-decoration:none;display:inline-block;width:auto;padding:12px 28px;">📸 Open Instagram Live</a>
           </div>
           <div style="padding:9px 16px;border-top:1px solid var(--border);">
             <a id="m-live-ext" href="#" target="_blank" style="font-size:12px;color:var(--accent);font-weight:600;text-decoration:none;">▶ Open externally ↗</a>
@@ -1655,7 +1655,7 @@ const platHelp = {
 };
 const platPH = {
   youtube:'https://youtube.com/live/… or youtu.be/…',
-  instagram:'https://instagram.com/gymlover_govindshukla70',
+  instagram:'https://instagram.com/dhairyaworkoutzone',
   facebook:'https://facebook.com/… live video link'
 };
 function selPlatform(p) {
@@ -2087,7 +2087,7 @@ async function checkLive() {
       if (emb===null) {
         $('m-yt-fb').style.display  = 'none';
         $('m-ig-card').style.display= 'block';
-        const lnk = $('m-ig-link'); if (lnk) lnk.href = data.url||'https://instagram.com/gymlover_govindshukla70';
+        const lnk = $('m-ig-link'); if (lnk) lnk.href = data.url||'https://instagram.com/dhairyaworkoutzone';
         $('m-live-ext').textContent = '📸 Open on Instagram'; $('m-live-ext').href = data.url||'#';
       } else {
         $('m-yt-fb').style.display  = 'block';
