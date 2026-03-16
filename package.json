@@ -1,7 +1,7 @@
 {
-  "name": "brothers-gym-portal",
+  "name": "Dhairya-Workout-Zone",
   "version": "1.0.0",
-  "description": "Brothers Unisex Gym — Member & Admin Portal",
+  "description": "Dhairya-Workout-Zone — Member & Admin Portal",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
