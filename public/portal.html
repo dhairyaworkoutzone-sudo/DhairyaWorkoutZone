@@ -899,7 +899,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
       <div class="fg"><label>Full Name</label><input id="edit-name"></div>
       <div class="fg"><label>Phone</label><input id="edit-phone" type="tel"></div>
       <div class="fg"><label>Plan</label>
-        <select id="edit-plan"><option value="monthly' — ₹1200</option><option value="quarterly">Quarterly ₹2100</option><option value="annual">Annual ₹7500</option></select>
+        <select id="edit-plan"><option value="monthly">Monthly ₹1200</option><option value="quarterly">Quarterly ₹3300</option><option value="annual">Annual ₹12000</option></select>
       </div>
       <div class="fg"><label>Admission Date</label><input id="edit-date" type="date"></div>
     </div>
@@ -921,9 +921,9 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <p style="color:var(--text3);font-size:13px;margin-bottom:18px;">Member: <strong id="renew-name" style="color:var(--text)"></strong></p>
     <div class="fg"><label>New Plan</label>
       <select id="renew-plan" onchange="toggleRenewCustom()">
-        <option value="monthly' — ₹1200</option>
-        <option value="quarterly">Quarterly ₹2100</option>
-        <option value="annual">Annual ₹7500</option>
+        <option value="monthly">Monthly ₹1200</option>
+        <option value="quarterly">Quarterly ₹3300</option>
+        <option value="annual">Annual ₹12000</option>
         <option value="custom">🎛️ Custom Plan</option>
       </select>
     </div>
@@ -954,7 +954,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <p style="color:var(--text3);font-size:13px;margin-bottom:18px;">Member: <strong id="cp-mem-name" style="color:var(--text)"></strong></p>
     <input type="hidden" id="cp-mem-id">
     <div class="fg"><label>Assign Plan</label>
-      <select id="cp-plan"><option value="monthly' — ₹1200</option><option value="quarterly">Quarterly ₹2100</option><option value="annual">Annual ₹7500</option></select>
+      <select id="cp-plan"><option value="monthly">Monthly ₹1200</option><option value="quarterly">Quarterly ₹3300</option><option value="annual">Annual ₹12000</option></select>
     </div>
     <div class="fg"><label>Payment Date</label><input id="cp-date" type="date"></div>
     <div style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);margin-bottom:4px;">✅ This will activate the member and send them a notification.</div>
@@ -1002,7 +1002,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <div class="fg">
       <label>Custom Price (₹) *</label>
       <input id="cp-price-amount" type="number" placeholder="e.g. 500" min="1">
-      <div style="font-size:11px;color:var(--text3);margin-top:5px;">Standard: Monthly ₹800 · Quarterly ₹2100 · Annual ₹7500</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px;">Standard: Monthly ₹1200 · Quarterly ₹3300 · Annual ₹12000</div>
     </div>
     <div class="fg"><label>Payment Date</label><input id="cp-price-date" type="date"></div>
     <div class="fg"><label>Payment Status</label>
@@ -1048,7 +1048,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <button class="modal-close" onclick="closeModal('payModal')" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;border-radius:6px;">✕</button>
     <div style="font-family:var(--fd);font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">💳 Pay via UPI</div>
     <p id="pay-plan-label" style="font-size:13px;color:var(--text3);margin-bottom:4px;">Scan to pay</p>
-    <div class="pay-amount" id="pay-amount">₹800</div>
+    <div class="pay-amount" id="pay-amount">₹1200</div>
     <div id="portalQR"></div>
     <p style="font-size:11px;color:var(--text3);margin-bottom:14px;">UPI ID: dhakarshivendra1@ibl</p>
     <div style="background:var(--accent-dim);border:1px solid rgba(255,60,0,0.2);border-radius:9px;padding:10px 12px;font-size:12px;color:var(--accent);margin-bottom:14px;line-height:1.7;">
@@ -1070,7 +1070,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 const API = '';
 const PLAN_DAYS  = {monthly:30, quarterly:90, annual:365};
 const PLAN_PRICE = {monthly:1200, quarterly:3300, annual:12000};
-const PLAN_NAME  = {monthly' — ₹1200', quarterly:'Quarterly ₹2100', annual:'Annual ₹7500'};
+const PLAN_NAME  = {monthly:'Monthly ₹1200', quarterly:'Quarterly ₹3300', annual:'Annual ₹12000'};
 const vapidPublicKey = "BFsYNuC01jQIfwKA0DQkrE1xSqRP2_pBlaPWZoie73KQlkSz5mAz5_auBiEwVbsQ6JKbl5L3wW3Vtg3ARBNZ53s";
 // ════════════════════════════════════════
 // PUSH SUBSCRIBE FUNCTION
@@ -1140,7 +1140,7 @@ const pPlanLabel = p => {
 let S = null; // session
 let allMembers = [], allPayments = [];
 let deleteTarget = null, renewTarget = null;
-let curPayPlan = 'monthly', curPayAmt = 800;
+let curPayPlan = 'monthly', curPayAmt = 1200;
 let otpOK = {s:false, f:false};
 let otpTimers = {};
 let swReg = null;
@@ -2159,7 +2159,7 @@ function buildPlanGrid() {
       <button class="plan-btn" style="background:#7c3aed;" onclick="confirmPlanSelect('custom',${m.customAmount||0},'Custom Plan')">Renew Same Plan</button>
     </div>` : '';
   return `<div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">💪 ${hasCustom?'Your Custom Plan + Standard Options':'Membership Plans'}</div>
-  <div class="plans-grid">${customCard}${planCard('monthly','Monthly','800','30','🗓️',false)}${planCard('quarterly','Quarterly','2100','90','⭐',!hasCustom)}${planCard('annual','Annual','7500','365','🏆',false)}</div>`;
+  <div class="plans-grid">${customCard}${planCard('monthly','Monthly','1200','30','🗓️',false)}${planCard('quarterly','Quarterly','3300','90','⭐',!hasCustom)}${planCard('annual','Annual','12000','365','🏆',false)}</div>`;
 }
 
 function planCard(plan,name,price,days,icon,pop) {
@@ -2435,7 +2435,7 @@ function openPayModal(plan, amount, label) {
   curPayPlan = plan; curPayAmt = amount;
   $('pay-amount').textContent = `₹${amount}`;
   $('pay-plan-label').textContent = `${label} — choose how to pay`;
-  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=BrotherGym&am=${amount}&cu=INR&tn=${encodeURIComponent(label)}`;
+  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=DhairyaGym&am=${amount}&cu=INR&tn=${encodeURIComponent(label)}`;
   const qrEl = $('portalQR'); qrEl.innerHTML = '';
   try {
     new QRCode(qrEl,{text:upi,width:180,height:180,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
@@ -2445,7 +2445,7 @@ function openPayModal(plan, amount, label) {
   openModal('payModal');
 }
 function openUPIApp() {
-  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=BrotherGym&am=${curPayAmt}&cu=INR&tn=${encodeURIComponent(PLAN_NAME[curPayPlan]||'Membership')}`;
+  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=DhairyaGym&am=${curPayAmt}&cu=INR&tn=${encodeURIComponent(PLAN_NAME[curPayPlan]||'Membership')}`;
   window.location.href = upi;
 }
 
@@ -2455,7 +2455,7 @@ function openUPIApp() {
 let deferredInstall = null;
 
 function initPWA() {
-  const realDomain = location.hostname.includes('onrender.com')||location.hostname.includes('brothersgym')||location.hostname==='localhost';
+  const realDomain = location.hostname.includes('onrender.com')||location.hostname.includes('dhairyaworkoutzone')||location.hostname==='localhost';
   if ('serviceWorker' in navigator && realDomain) {
     navigator.serviceWorker.register('/sw.js').then(async reg => {
       swReg = reg;

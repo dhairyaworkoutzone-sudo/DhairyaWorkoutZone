@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 webpush.setVapidDetails(
-  "mailto:admin@brothersgym.com",
+  "mailto:dhairyaworkoutzone@gmail.com",
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );
@@ -45,7 +45,7 @@ function gymIconSVG(size) {
     <rect x="352" y="240" width="60"  height="32" rx="8"  fill="#ff3c00"/>
     <rect x="148" y="196" width="216" height="120" rx="16" fill="#ff3c00"/>
     <text x="256" y="285" font-family="Arial Black,sans-serif" font-weight="900"
-          font-size="88" fill="white" text-anchor="middle" dominant-baseline="central">B</text>
+          font-size="88" fill="white" text-anchor="middle" dominant-baseline="central">D</text>
   </svg>`;
 }
 app.get('/icon-192.png', (req,res) => {
@@ -134,7 +134,7 @@ async function connectDB() {
   const client = new MongoClient(uri, {serverSelectionTimeoutMS:30000, connectTimeoutMS:30000});
   await client.connect();
   await client.db('admin').command({ping:1});
-  db = client.db('brothers_gym');
+  db = client.db('dhairya_gym');
   await db.collection('members').createIndex({phone:1},{unique:true});
   await db.collection('payments').createIndex({memberId:1});
   await db.collection('payments').createIndex({createdAt:-1});
@@ -146,7 +146,7 @@ async function connectDB() {
   await db.collection('push_subs').deleteMany({endpoint:{$exists:false}});
   await db.collection('push_subs').deleteMany({endpoint:null});
   await db.collection('push_queue').createIndex({createdAt:1},{expireAfterSeconds:86400});
-  console.log('✅  MongoDB Atlas connected — brothers_gym database ready');
+  console.log('✅  MongoDB Atlas connected — dhairya_gym database ready');
 }
 
 // ════════════════════════════════════════════════════════
@@ -824,7 +824,7 @@ app.post('/api/push/mark-delivered', requireDB, async (req,res) => {
 
 // ── Utility ────────────────────────────────────────────────
 app.get('/api/status', (req,res) => res.json({dbConnected:!!db, server:'ok', time:new Date().toISOString()}));
-app.get('/ping',       (req,res) => res.json({status:'ok', time:new Date().toISOString(), gym:'Dhairya Workout Zone Mathura 💪'}));
+app.get('/ping',       (req,res) => res.json({status:'ok', time:new Date().toISOString(), gym:'Dhairya Workout Zone Agra 💪'}));
 app.get('/health',     (req,res) => res.json({status:'healthy'}));
 
 // ════════════════════════════════════════════════════════
