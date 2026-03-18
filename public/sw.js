@@ -1,6 +1,6 @@
 // Dhairya Workout Zone — Service Worker v4
 // TRUE background push: periodic sync + push events
-const CACHE = 'dhairya-gym-v4';
+const CACHE = 'dhairya-gym-v5';
 const OFFLINE_URLS = ['/portal', '/manifest.json', '/icon-192.png'];
 
 self.addEventListener('install', e => {
@@ -42,15 +42,34 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   if (!e.request.url.startsWith(self.location.origin)) return;
+
   e.respondWith(
     fetch(e.request)
       .then(res => {
-        if (res.ok && (e.request.url.includes('/portal') || e.request.url.includes('/manifest') || e.request.url.includes('/icon-'))) {
-          caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+        // Only cache valid responses for key URLs
+        if (
+          res && res.ok && res.status === 200 &&
+          (e.request.url.includes('/portal') ||
+           e.request.url.includes('/manifest') ||
+           e.request.url.includes('/icon-'))
+        ) {
+          // Clone FIRST — then cache the clone, return original
+          const resClone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, resClone));
         }
         return res;
       })
-      .catch(() => caches.match(e.request))
+      .catch(() => {
+        // Offline fallback: try cache, then return a basic offline response
+        return caches.match(e.request).then(cached => {
+          if (cached) return cached;
+          // For navigation requests, return cached portal if available
+          if (e.request.mode === 'navigate') {
+            return caches.match('/portal');
+          }
+          return new Response('', { status: 408, statusText: 'Offline' });
+        });
+      })
   );
 });
 
