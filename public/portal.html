@@ -1,12 +1,3 @@
-
-<!-- Dhairya Workout Zone Info -->
-<!-- Address: Shri Bihari G Palace, Sector 7, Lohamandi, Agra, Uttar Pradesh 282007 -->
-<!-- Phone: 8979890960 -->
-<!-- Instagram: https://www.instagram.com/dhairyaworkoutzone/ -->
-<!-- UPI: dhakarshivendra1@ibl -->
-<!-- Coordinates: 27.1982153,77.9391066 -->
-<!-- Google Maps: https://www.google.com/maps/place/Dhairya+Workout+Zone/@27.1982153,77.9391066 -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +9,7 @@
 <meta name="theme-color" content="#ff3c00">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="DhairyaWorkoutZone">
+<meta name="apple-mobile-web-app-title" content="DhairyaGym">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <style>
 /* ══════════════════════════════════════════
@@ -459,24 +450,15 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 
     <!-- FORGOT FORM -->
     <div id="form-forgot" style="display:none">
+      <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px;">Enter your registered phone number. A reset request will be sent to the gym admin. They will give you a temporary password — then change it in Settings.</p>
       <div class="fg"><label>Phone Number</label>
-        <div class="otp-row">
-          <input id="f-phone" type="tel" placeholder="98765 43210" oninput="numOnly(this)" inputmode="numeric">
-          <button class="otp-btn" id="f-otp-btn" onclick="sendOTP('f')">Get OTP</button>
-        </div>
+        <input id="f-phone" type="tel" placeholder="98765 43210" oninput="numOnly(this)" inputmode="numeric">
       </div>
-      <div id="f-otp-group" style="display:none">
-        <div class="fg">
-          <label>Verification Code <span id="f-timer" style="color:var(--yellow);font-size:11px;margin-left:6px;"></span></label>
-          <input id="f-otp" type="text" placeholder="••••••" maxlength="6" style="text-align:center;font-size:22px;letter-spacing:8px;font-weight:700;" oninput="checkOTP('f')">
-        </div>
-        <div id="f-otp-show"></div>
-      </div>
-      <div id="f-pw-group" style="display:none">
-        <div class="fg"><label>New Password</label><input id="f-pw" type="password" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doReset()"></div>
+      <div class="fg"><label>Your Name (for admin)</label>
+        <input id="f-name" placeholder="So admin knows who you are">
       </div>
       <div id="f-msg" class="msg"></div>
-      <button class="btn" id="f-btn" onclick="doReset()" style="display:none">Reset Password</button>
+      <button class="btn" id="f-btn" onclick="doRequestReset()">📨 Send Reset Request to Admin</button>
       <p class="hint"><a class="link" onclick="switchTab('login')">← Back to Login</a></p>
     </div>
 
@@ -605,11 +587,20 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
           <div class="form-grid">
             <div class="fg"><label>Admission Date *</label><input id="am-date" type="date"></div>
             <div class="fg"><label>Membership Plan *</label>
-              <select id="am-plan">
+              <select id="am-plan" onchange="toggleAmCustom()">
                 <option value="monthly">Monthly — ₹1200</option>
-                <option value="quarterly">Quarterly — ₹3600</option>
+                <option value="quarterly">Quarterly — ₹3300</option>
                 <option value="annual">Annual — ₹12000</option>
+                <option value="custom">🎛️ Custom Plan</option>
               </select>
+            </div>
+          </div>
+          <!-- Custom plan fields — shown only when custom selected -->
+          <div id="am-custom-wrap" style="display:none;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.25);border-radius:10px;padding:14px;margin-bottom:8px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:10px;">🎛️ Custom Plan Details</div>
+            <div class="form-grid">
+              <div class="fg" style="margin-bottom:0;"><label>Custom Days *</label><input id="am-custom-days" type="number" placeholder="e.g. 45" min="1" max="730"></div>
+              <div class="fg" style="margin-bottom:0;"><label>Custom Price (₹) *</label><input id="am-custom-price" type="number" placeholder="e.g. 500" min="1"></div>
             </div>
           </div>
           <div class="form-grid">
@@ -908,7 +899,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
       <div class="fg"><label>Full Name</label><input id="edit-name"></div>
       <div class="fg"><label>Phone</label><input id="edit-phone" type="tel"></div>
       <div class="fg"><label>Plan</label>
-        <select id="edit-plan"><option value="monthly">Monthly ₹1200</option><option value="quarterly">Quarterly ₹3600</option><option value="annual">Annual ₹12000</option></select>
+        <select id="edit-plan"><option value="monthly' — ₹1200</option><option value="quarterly">Quarterly ₹2100</option><option value="annual">Annual ₹7500</option></select>
       </div>
       <div class="fg"><label>Admission Date</label><input id="edit-date" type="date"></div>
     </div>
@@ -929,7 +920,20 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <div class="modal-title">Renew Membership</div>
     <p style="color:var(--text3);font-size:13px;margin-bottom:18px;">Member: <strong id="renew-name" style="color:var(--text)"></strong></p>
     <div class="fg"><label>New Plan</label>
-      <select id="renew-plan"><option value="monthly">Monthly ₹1200</option><option value="quarterly">Quarterly ₹3600</option><option value="annual">Annual ₹12000</option></select>
+      <select id="renew-plan" onchange="toggleRenewCustom()">
+        <option value="monthly' — ₹1200</option>
+        <option value="quarterly">Quarterly ₹2100</option>
+        <option value="annual">Annual ₹7500</option>
+        <option value="custom">🎛️ Custom Plan</option>
+      </select>
+    </div>
+    <!-- Custom plan fields in renew modal -->
+    <div id="renew-custom-wrap" style="display:none;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.25);border-radius:9px;padding:12px;margin-bottom:4px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:10px;">🎛️ Custom Plan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="fg" style="margin-bottom:0;"><label>Days *</label><input id="renew-custom-days" type="number" placeholder="e.g. 45" min="1"></div>
+        <div class="fg" style="margin-bottom:0;"><label>Price (₹) *</label><input id="renew-custom-price" type="number" placeholder="e.g. 500" min="1"></div>
+      </div>
     </div>
     <div class="fg"><label>Payment Date</label><input id="renew-date" type="date"></div>
     <div class="fg"><label>Payment Status</label>
@@ -950,7 +954,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <p style="color:var(--text3);font-size:13px;margin-bottom:18px;">Member: <strong id="cp-mem-name" style="color:var(--text)"></strong></p>
     <input type="hidden" id="cp-mem-id">
     <div class="fg"><label>Assign Plan</label>
-      <select id="cp-plan"><option value="monthly">Monthly ₹1200</option><option value="quarterly">Quarterly ₹3600</option><option value="annual">Annual ₹12000</option></select>
+      <select id="cp-plan"><option value="monthly' — ₹1200</option><option value="quarterly">Quarterly ₹2100</option><option value="annual">Annual ₹7500</option></select>
     </div>
     <div class="fg"><label>Payment Date</label><input id="cp-date" type="date"></div>
     <div style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);margin-bottom:4px;">✅ This will activate the member and send them a notification.</div>
@@ -975,7 +979,70 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
   </div>
 </div>
 
-<!-- Payment Modal (Member) -->
+<!-- Custom Price Modal -->
+<div class="overlay" id="customPriceModal">
+  <div class="modal" style="max-width:440px;">
+    <button class="modal-close" onclick="closeModal('customPriceModal')">✕</button>
+    <div class="modal-title">🎛️ Custom Pricing</div>
+    <p style="color:var(--text3);font-size:13px;margin-bottom:18px;">Member: <strong id="cp-price-name" style="color:var(--text)"></strong></p>
+    <input type="hidden" id="cp-price-id">
+    <div class="fg">
+      <label>Plan Duration</label>
+      <select id="cp-price-plan">
+        <option value="monthly">Monthly (30 days)</option>
+        <option value="quarterly">Quarterly (90 days)</option>
+        <option value="annual">Annual (365 days)</option>
+        <option value="custom">Custom Days</option>
+      </select>
+    </div>
+    <div class="fg" id="cp-custom-days-group" style="display:none;">
+      <label>Custom Days *</label>
+      <input id="cp-custom-days" type="number" placeholder="e.g. 45" min="1" max="730">
+    </div>
+    <div class="fg">
+      <label>Custom Price (₹) *</label>
+      <input id="cp-price-amount" type="number" placeholder="e.g. 500" min="1">
+      <div style="font-size:11px;color:var(--text3);margin-top:5px;">Standard: Monthly ₹800 · Quarterly ₹2100 · Annual ₹7500</div>
+    </div>
+    <div class="fg"><label>Payment Date</label><input id="cp-price-date" type="date"></div>
+    <div class="fg"><label>Payment Status</label>
+      <select id="cp-price-status"><option value="paid">Paid — Confirmed</option><option value="pending">Pending</option></select>
+    </div>
+    <div style="background:rgba(255,60,0,0.06);border:1px solid rgba(255,60,0,0.2);border-radius:9px;padding:10px 12px;font-size:12px;color:var(--text2);margin-bottom:4px;">
+      💡 This creates a custom plan at your specified price. Days left will count down from today using the custom duration.
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('customPriceModal')">Cancel</button>
+      <button class="btn" style="background:#7c3aed;" onclick="confirmCustomPrice()">✅ Apply Custom Plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Password Admin Modal -->
+<div class="overlay" id="resetPwAdminModal">
+  <div class="modal" style="max-width:420px;">
+    <button class="modal-close" onclick="closeModal('resetPwAdminModal')">✕</button>
+    <div class="modal-title">🔑 Reset Member Password</div>
+    <p style="color:var(--text3);font-size:13px;margin-bottom:18px;">Member: <strong id="rp-mem-name" style="color:var(--text)"></strong> &nbsp;<span id="rp-mem-phone" style="color:var(--text3);font-size:12px;"></span></p>
+    <input type="hidden" id="rp-mem-id">
+    <input type="hidden" id="rp-mem-phone-val">
+    <div class="fg">
+      <label>New Temporary Password *</label>
+      <div class="pw-wrap">
+        <input type="password" id="rp-new-pw" placeholder="Set a temp password for member">
+        <button class="pw-eye" type="button" onclick="togglePw('rp-new-pw',this)">👁</button>
+      </div>
+    </div>
+    <div style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--text2);margin-bottom:4px;">
+      📱 Share this password with the member. They can change it in Settings after login.
+    </div>
+    <div id="rp-msg" class="msg"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('resetPwAdminModal')">Cancel</button>
+      <button class="btn btn-green" onclick="doAdminResetPw()">🔑 Set Password</button>
+    </div>
+  </div>
+</div>
 <div class="overlay" id="payModal">
   <div class="pay-modal">
     <button class="modal-close" onclick="closeModal('payModal')" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;border-radius:6px;">✕</button>
@@ -983,7 +1050,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
     <p id="pay-plan-label" style="font-size:13px;color:var(--text3);margin-bottom:4px;">Scan to pay</p>
     <div class="pay-amount" id="pay-amount">₹800</div>
     <div id="portalQR"></div>
-    <p style="font-size:11px;color:var(--text3);margin-bottom:14px;">UPI ID: 8979890960-3@ybl</p>
+    <p style="font-size:11px;color:var(--text3);margin-bottom:14px;">UPI ID: dhakarshivendra1@ibl</p>
     <div style="background:var(--accent-dim);border:1px solid rgba(255,60,0,0.2);border-radius:9px;padding:10px 12px;font-size:12px;color:var(--accent);margin-bottom:14px;line-height:1.7;">
       📱 Mobile — tap button below to open UPI app<br>
       🖥️ Desktop — scan QR with phone camera
@@ -1002,8 +1069,73 @@ tbody tr:hover td{background:rgba(255,255,255,0.02);}
 // ════════════════════════════════════════
 const API = '';
 const PLAN_DAYS  = {monthly:30, quarterly:90, annual:365};
-const PLAN_PRICE = {monthly:1200, quarterly:3600, annual:12000};
-const PLAN_NAME  = {monthly:'Monthly ₹1200', quarterly:'Quarterly ₹3600', annual:'Annual ₹12000'};
+const PLAN_PRICE = {monthly:1200, quarterly:3300, annual:12000};
+const PLAN_NAME  = {monthly' — ₹1200', quarterly:'Quarterly ₹2100', annual:'Annual ₹7500'};
+const vapidPublicKey = "BFsYNuC01jQIfwKA0DQkrE1xSqRP2_pBlaPWZoie73KQlkSz5mAz5_auBiEwVbsQ6JKbl5L3wW3Vtg3ARBNZ53s";
+// ════════════════════════════════════════
+// PUSH SUBSCRIBE FUNCTION
+// ════════════════════════════════════════
+
+async function subscribePush(phone){
+
+  const reg = await navigator.serviceWorker.ready;
+
+  const sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+  });
+
+  await fetch('/api/push/subscribe', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      phone,
+      subscription: sub
+    })
+  });
+
+}
+
+
+// ════════════════════════════════════════
+// HELPER FUNCTION
+// ════════════════════════════════════════
+
+function urlBase64ToUint8Array(base64String) {
+
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = atob(base64);
+
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
+
+const getPlanName = (plan, amount, days) => {
+  if (plan === 'custom') return `Custom (${days||'?'}d) ₹${amount||''}`;
+  return PLAN_NAME[plan] || plan;
+};
+// Member-aware label — use everywhere a plan name is shown
+const mPlanLabel = m => {
+  if (!m || !m.plan) return '—';
+  if (m.plan === 'custom') return `Custom (${m.customDays||'?'}d) ₹${m.customAmount||'?'}`;
+  return PLAN_NAME[m.plan] || m.plan;
+};
+// Payment-aware label
+const pPlanLabel = p => {
+  if (!p || !p.plan) return '—';
+  if (p.plan === 'custom') return `Custom ₹${p.amount||'?'}`;
+  return PLAN_NAME[p.plan] || p.plan;
+};
 
 let S = null; // session
 let allMembers = [], allPayments = [];
@@ -1050,7 +1182,8 @@ function saveSession(s) {
 
 function getExpiry(m) {
   const d = new Date(m.admissionDate);
-  d.setDate(d.getDate() + (PLAN_DAYS[m.plan] || 30));
+  const days = m.plan === 'custom' ? (m.customDays || 30) : (PLAN_DAYS[m.plan] || 30);
+  d.setDate(d.getDate() + days);
   return d;
 }
 
@@ -1299,16 +1432,19 @@ async function doSignup() {
   setTimeout(() => { saveSession({type:'member',...data.member}); loadMemberView(); }, 1200);
 }
 
-async function doReset() {
+async function doRequestReset() {
   const ph = $('f-phone').value.replace(/\D/g,'').slice(-10);
-  const pw = $('f-pw').value;
-  if (!otpOK.f) return showMsg('f-msg','Please verify OTP first.','err');
-  if (!pw || pw.length < 6) return showMsg('f-msg','Password must be at least 6 characters.','err');
-  setBtn('f-btn',true,'Resetting…');
-  const data = await api('POST','/api/auth/reset-password',{phone:ph,newPassword:pw});
-  setBtn('f-btn',false,'Reset Password');
-  showMsg('f-msg',data.message,data.success?'ok':'err');
-  if (data.success) setTimeout(() => switchTab('login'), 2000);
+  const name = $('f-name')?.value.trim() || '';
+  if (ph.length !== 10) return showMsg('f-msg','Enter a valid 10-digit phone number.','err');
+  setBtn('f-btn', true, 'Sending request…');
+  // Check member exists
+  const check = await api('POST','/api/auth/request-password-reset',{phone:ph, name});
+  setBtn('f-btn', false, '📨 Send Reset Request to Admin');
+  if (check.success) {
+    showMsg('f-msg','✅ Request sent! Admin will give you a temporary password. Then change it in Settings.','ok');
+  } else {
+    showMsg('f-msg', check.message || 'Could not send request. Contact gym directly.','err');
+  }
 }
 
 async function doAdminLogin() {
@@ -1398,7 +1534,7 @@ function renderDash() {
     : `<tr><td colspan="4" class="empty">No members expiring soon ✅</td></tr>`;
 
   $('recent-pays').innerHTML = paidPayments.slice(0,5).length
-    ? paidPayments.slice(0,5).map(p => `<tr><td>${p.memberName}</td><td>${PLAN_NAME[p.plan]||p.plan}</td><td>₹${p.amount}</td><td>${fmtDate(p.date)}</td><td><span class="badge badge-paid">paid</span></td></tr>`).join('')
+    ? paidPayments.slice(0,5).map(p => `<tr><td>${p.memberName}</td><td>${pPlanLabel(p)}</td><td>₹${p.amount}</td><td>${fmtDate(p.date)}</td><td><span class="badge badge-paid">paid</span></td></tr>`).join('')
     : `<tr><td colspan="5" class="empty">No confirmed payments yet</td></tr>`;
 
   // Monthly revenue history section
@@ -1435,7 +1571,7 @@ function renderMembers() {
         const stBadge = st==='active'?'active':st==='expiring'?'expiring':st==='expired'?'expired':st==='pending'?'pending':'noplan';
         return `<tr>
           <td><strong>${m.name}</strong></td><td>${m.phone}</td>
-          <td>${m.plan ? PLAN_NAME[m.plan] : '—'}</td>
+          <td>${mPlanLabel(m)}</td>
           <td>${fmtDate(m.admissionDate)}</td>
           <td>${m.admissionDate&&m.plan ? fmtDate(getExpiry(m).toISOString().split('T')[0]) : '—'}</td>
           <td><span class="badge badge-${stBadge}">${st}${dl>0&&dl<=7?` (${dl}d)`:''}</span></td>
@@ -1443,6 +1579,8 @@ function renderMembers() {
           <td><div class="tbl-btns">
             <button class="tbl-btn" onclick="openEdit('${m.id}')">✏️</button>
             <button class="tbl-btn" onclick="openRenew('${m.id}','${m.name}')">🔄</button>
+            <button class="tbl-btn" style="color:#a78bfa;" onclick="openCustomPrice('${m.id}','${m.name}')">🎛️</button>
+            <button class="tbl-btn" onclick="openResetPw('${m.id}','${m.name}','${m.phone}')">🔑</button>
             <button class="tbl-btn del" onclick="openDelete('${m.id}','${m.name}')">🗑️</button>
           </div></td>
         </tr>`;
@@ -1467,7 +1605,7 @@ function renderPayments() {
   const list = allPayments.filter(p => (p.memberName||'').toLowerCase().includes(q)||(p.phone||'').includes(q));
   $('pay-body').innerHTML = list.length
     ? list.map(p => `<tr>
-        <td>${p.memberName}</td><td>${p.phone}</td><td>${PLAN_NAME[p.plan]||p.plan}</td>
+        <td>${p.memberName}</td><td>${p.phone}</td><td>${pPlanLabel(p)}</td>
         <td>₹${p.amount}</td><td>${fmtDate(p.date)}</td>
         <td><span class="badge badge-${p.status}">${p.status}</span></td>
         <td>${p.status!=='paid'?`<button class="tbl-btn ok" onclick="markPaid('${p.id}')">✓ Mark Paid</button>`:''}</td>
@@ -1480,26 +1618,42 @@ async function markPaid(id) {
   loadAdminData(); toast('✅ Payment confirmed','Member updated.','ok');
 }
 
+function toggleAmCustom() {
+  const plan = $('am-plan').value;
+  const wrap = $('am-custom-wrap');
+  if (wrap) wrap.style.display = plan === 'custom' ? 'block' : 'none';
+}
+
 async function addMember() {
   const name = $('am-name').value.trim();
-  const ph = $('am-phone').value.replace(/\D/g,'').slice(-10);
+  const ph   = $('am-phone').value.replace(/\D/g,'').slice(-10);
   const plan = $('am-plan').value;
   const date = $('am-date').value;
   const pw   = $('am-pass').value;
   const pw2  = $('am-pass2').value;
+  const customDays  = plan === 'custom' ? parseInt($('am-custom-days')?.value||0)  : null;
+  const customPrice = plan === 'custom' ? parseInt($('am-custom-price')?.value||0) : null;
   if (!name) return showMsg('am-msg','Enter member name.','err');
   if (ph.length!==10) return showMsg('am-msg','Enter a valid phone number.','err');
   if (!plan||!date) return showMsg('am-msg','Select plan and admission date.','err');
+  if (plan === 'custom' && (!customDays||customDays<1)) return showMsg('am-msg','Enter valid custom days.','err');
+  if (plan === 'custom' && (!customPrice||customPrice<1)) return showMsg('am-msg','Enter valid custom price.','err');
   if (!pw||pw.length<6) return showMsg('am-msg','Password must be at least 6 characters.','err');
   if (pw!==pw2) return showMsg('am-msg','Passwords do not match.','err');
   const data = await api('POST','/api/members',{
     name, phone:ph, plan, admissionDate:date,
     gender:$('am-gender').value, emergencyContact:$('am-emg').value,
-    healthNotes:$('am-notes').value, paymentStatus:$('am-pay').value, password:pw
+    healthNotes:$('am-notes').value, paymentStatus:$('am-pay').value, password:pw,
+    customDays: customDays || null,
+    customAmount: customPrice || null
   });
   showMsg('am-msg', data.success?'✅ Member added!':data.message, data.success?'ok':'err');
   if (data.success) {
     ['am-name','am-phone','am-date','am-emg','am-notes','am-pass','am-pass2'].forEach(id => $(id).value='');
+    if ($('am-custom-days')) $('am-custom-days').value = '';
+    if ($('am-custom-price')) $('am-custom-price').value = '';
+    $('am-plan').value = 'monthly';
+    toggleAmCustom();
     loadAdminData();
     toast('✅ Member Added',`${name} registered.`,'ok');
   }
@@ -1531,17 +1685,42 @@ function openRenew(id, name) {
   renewTarget = id;
   $('renew-name').textContent = name;
   $('renew-date').value = todayStr();
+  $('renew-plan').value = 'monthly';
+  // Pre-fill custom if member has custom plan
+  const m = allMembers.find(x => x.id===id);
+  if (m?.plan === 'custom') {
+    $('renew-plan').value = 'custom';
+    if ($('renew-custom-days'))  $('renew-custom-days').value  = m.customDays  || '';
+    if ($('renew-custom-price')) $('renew-custom-price').value = m.customAmount || '';
+  }
+  toggleRenewCustom();
   openModal('renewModal');
 }
+
+function toggleRenewCustom() {
+  const plan = $('renew-plan')?.value;
+  const wrap = $('renew-custom-wrap');
+  if (wrap) wrap.style.display = plan === 'custom' ? 'block' : 'none';
+}
+
 async function confirmRenew() {
+  const plan = $('renew-plan').value;
+  const customDays  = plan === 'custom' ? parseInt($('renew-custom-days')?.value  || 0) : null;
+  const customPrice = plan === 'custom' ? parseInt($('renew-custom-price')?.value || 0) : null;
+  if (plan === 'custom' && (!customDays  || customDays  < 1)) { toast('❌ Enter valid custom days','','danger'); return; }
+  if (plan === 'custom' && (!customPrice || customPrice < 1)) { toast('❌ Enter valid custom price','','danger'); return; }
   const data = await api('POST',`/api/members/${renewTarget}/renew`,{
-    plan:$('renew-plan').value, paymentDate:$('renew-date').value, paymentStatus:$('renew-status').value
+    plan,
+    paymentDate:   $('renew-date').value,
+    paymentStatus: $('renew-status').value,
+    customDays:    customDays,
+    customAmount:  customPrice
   });
   closeModal('renewModal');
   if (data.success) {
     await loadAdminData();
     toast('🔄 Renewed',`${data.member?.name} renewed.`,'ok');
-  } else toast('❌ Error',data.message,'danger');
+  } else toast('❌ Error', data.message,'danger');
 }
 
 function openConfirmPay(id, name) {
@@ -1573,6 +1752,78 @@ async function confirmDelete() {
   $('del-confirm-btn').disabled = false;
   $('del-confirm-btn').textContent = '🗑️ Remove';
   loadAdminData(); toast('🗑️ Deleted','Member removed.','info');
+}
+
+// ── CUSTOM PRICING ──
+function openCustomPrice(id, name) {
+  $('cp-price-id').value = id;
+  $('cp-price-name').textContent = name;
+  $('cp-price-date').value = todayStr();
+  $('cp-price-amount').value = '';
+  $('cp-custom-days-group').style.display = 'none';
+  $('cp-price-plan').value = 'monthly';
+  $('cp-price-plan').onchange = function() {
+    $('cp-custom-days-group').style.display = this.value === 'custom' ? 'block' : 'none';
+  };
+  openModal('customPriceModal');
+}
+
+async function confirmCustomPrice() {
+  const id     = $('cp-price-id').value;
+  const plan   = $('cp-price-plan').value;
+  const amount = parseInt($('cp-price-amount').value);
+  const date   = $('cp-price-date').value;
+  const status = $('cp-price-status').value;
+  const customDays = plan === 'custom' ? parseInt($('cp-custom-days').value) : null;
+  if (!amount || amount < 1) { toast('❌ Enter a valid price','','danger'); return; }
+  if (plan === 'custom' && (!customDays || customDays < 1)) { toast('❌ Enter valid custom days','','danger'); return; }
+  const finalPlan = plan === 'custom' ? 'custom' : plan;
+  const finalDays = plan === 'custom' ? customDays : PLAN_DAYS[plan];
+  const data = await api('POST',`/api/members/${id}/renew`,{
+    plan: finalPlan,
+    customDays: finalDays,
+    customAmount: amount,
+    paymentDate: date,
+    paymentStatus: status,
+    adminPassword: S?.adminPassword||''
+  });
+  closeModal('customPriceModal');
+  if (data.success) {
+    await loadAdminData();
+    toast('🎛️ Custom Plan Applied',`₹${amount} for ${finalDays} days.`,'ok');
+  } else toast('❌ Error',data.message,'danger');
+}
+
+// ── ADMIN PASSWORD RESET ──
+function openResetPw(id, name, phone) {
+  $('rp-mem-id').value = id;
+  $('rp-mem-name').textContent = name;
+  $('rp-mem-phone').textContent = phone;
+  $('rp-mem-phone-val').value = phone;
+  $('rp-new-pw').value = '';
+  $('rp-msg').style.display = 'none';
+  openModal('resetPwAdminModal');
+}
+
+async function doAdminResetPw() {
+  const phone = $('rp-mem-phone-val').value;
+  const pw = $('rp-new-pw').value;
+  if (!pw || pw.length < 4) { showMsg('rp-msg','Enter a password (min 4 chars).','err'); return; }
+  const data = await api('POST','/api/auth/admin-reset-password',{
+    phone, newPassword: pw, adminPassword: S?.adminPassword||''
+  });
+  if (data.success) {
+    showMsg('rp-msg','✅ Password reset! Share it with the member.','ok');
+    setTimeout(() => closeModal('resetPwAdminModal'), 2500);
+    toast('🔑 Password Reset','Member can now login with new password.','ok');
+    // Add notification for the member
+    await api('POST','/api/notifications',{
+      type:'info', icon:'🔑',
+      title:'Password reset by admin',
+      desc:'Your login password has been reset by the gym admin. Login with your new password, then change it in Settings.',
+      memberId: $('rp-mem-id').value, adminOnly:false
+    });
+  } else showMsg('rp-msg', data.message||'Failed.','err');
 }
 
 async function loadAdminNotifs() {
@@ -1708,7 +1959,7 @@ async function adminGoLive() {
     $('live-frame').src = emb;
     toast('🔴 You are LIVE!','Everyone can watch now.','ok');
   }
-  addChat('a-chat','DhairyaWorkoutZone 🏋️','🔴 Stream started! 💪');
+  addChat('a-chat','DhairyaGym 🏋️','🔴 Stream started! 💪');
 }
 
 async function adminStopLive() {
@@ -1819,9 +2070,23 @@ async function loadMemberView() {
 function renderHome() {
   const m = S;
   const initials = m.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  const st = m.memberStatus||'no-plan';
+  const st = m.memberStatus || 'no-plan';
   const stLabels = {active:'Active','no-plan':'No Plan','pending-payment':'Pending Payment',inactive:'Inactive'};
   const stBadge  = {active:'active','no-plan':'noplan','pending-payment':'pending',inactive:'expired'};
+  const d = getDaysLeft(m);
+  // Compute proper status including days-based expiry
+  let displayStatus = st;
+  let displayBadge  = stBadge[st] || 'noplan';
+  if (st === 'active') {
+    if (d <= 0)      { displayStatus = 'Expired';          displayBadge = 'expired'; }
+    else if (d <= 2) { displayStatus = `Expiring (${d}d)`; displayBadge = 'expiring'; }
+    else if (d <= 7) { displayStatus = `${d} days left`;   displayBadge = 'expiring'; }
+    else             { displayStatus = 'Active';            displayBadge = 'active'; }
+  }
+  // Plan display name — custom shows custom amount
+  const planDisplay = m.plan === 'custom'
+    ? `Custom ${m.customDays||'?'}d ₹${m.customAmount||'?'}`
+    : (m.plan ? (PLAN_NAME[m.plan] || m.plan) : '');
 
   $('m-profile-card').innerHTML = `
     <div class="m-profile">
@@ -1830,13 +2095,13 @@ function renderHome() {
         <div style="font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">ID: ${(m.id||'').slice(0,8).toUpperCase()}</div>
         <div class="m-name">${m.name}</div>
         <div style="margin-top:6px;display:flex;gap:7px;flex-wrap:wrap;">
-          ${m.plan?`<span class="m-tag">${PLAN_NAME[m.plan]}</span>`:''}
-          <span class="badge badge-${stBadge[st]||'noplan'}">${stLabels[st]||st}</span>
+          ${planDisplay?`<span class="m-tag">${planDisplay}</span>`:''}
+          <span class="badge badge-${displayBadge}">${displayStatus}</span>
+          ${d>0&&d<999?`<span style="font-size:11px;color:var(--text3);align-self:center;">${d} day${d===1?'':'s'} left</span>`:''}
         </div>
       </div>
     </div>`;
 
-  const d = getDaysLeft(m);
   if (st==='no-plan' || st==='pending-payment') {
     renderSelectPlan();
   } else if (d <= 2) {
@@ -1850,7 +2115,7 @@ function renderSelectPlan() {
   const m = S;
   const isPend = m.memberStatus === 'pending-payment';
   $('m-status-box').innerHTML = isPend
-    ? `<div class="pending-box"><h3>⏳ Payment Pending</h3><p>Your account is active! Membership will be unlocked once the gym owner confirms your payment.<br><br>📞 <a href="tel:+918979890960" style="color:var(--accent);font-weight:600;">+91 8979890960</a> &nbsp;|&nbsp; <a href="https://wa.me/918979890960" target="_blank" style="color:var(--accent);font-weight:600;">WhatsApp</a></p></div>`
+    ? `<div class="pending-box"><h3>⏳ Payment Pending</h3><p>Your account is active! Membership will be unlocked once the gym owner confirms your payment.<br><br>📞 <a href="tel:+918979890960" style="color:var(--accent);font-weight:600;">+91 95486 11898</a> &nbsp;|&nbsp; <a href="https://wa.me/918979890960" target="_blank" style="color:var(--accent);font-weight:600;">WhatsApp</a></p></div>`
     : `<div class="pending-box"><h3>🎯 Select a Plan</h3><p>Choose a membership plan below and pay the gym owner directly to activate.</p></div>`;
   $('m-mem-card').innerHTML = buildPlanGrid();
   $('m-rec-pays').innerHTML = '';
@@ -1862,17 +2127,39 @@ function renderRenewPrompt(daysLeft) {
   $('m-status-box').innerHTML = `
     <div class="pending-box" style="border-color:rgba(${expired?'239,68,68':'245,158,11'},.3);background:rgba(${expired?'239,68,68':'245,158,11'},.06);">
       <h3 style="color:var(${expired?'--red':'--yellow'})">${expired?'❌ Membership Expired!':'⚠️ Expiring in '+daysLeft+' day(s)!'}</h3>
-      <p>${expired?'Renew now to continue training!':'Your membership expires very soon! Renew to keep access.'}<br><br>
-      <a href="tel:+918979890960" style="color:var(--accent);font-weight:600;">+91 8979890960</a> &nbsp;|&nbsp;
-      <a href="https://wa.me/918979890960?text=Hi, renew membership. Name: ${encodeURIComponent(m.name)}" target="_blank" style="color:var(--accent);font-weight:600;">WhatsApp</a></p>
+      <p>${expired?'Renew now to continue training!':'Your membership expires very soon! Renew to keep access.'}</p>
+      <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <a href="tel:+918979890960" style="color:var(--accent);font-weight:600;font-size:13px;">📞 Call</a>
+        <span style="color:var(--text3)">|</span>
+        <a href="https://wa.me/918979890960?text=Hi, renew membership. Name: ${encodeURIComponent(m.name)}" target="_blank" style="color:var(--accent);font-weight:600;font-size:13px;">💬 WhatsApp</a>
+        <span style="color:var(--text3)">|</span>
+        <a onclick="requestRenewalFromAdmin()" style="color:var(--accent);font-weight:600;font-size:13px;cursor:pointer;">📨 Request Admin</a>
+      </div>
     </div>`;
   $('m-mem-card').innerHTML = buildPlanGrid();
   $('m-rec-pays').innerHTML = '';
 }
 
 function buildPlanGrid() {
-  return `<div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">💪 Membership Plans</div>
-  <div class="plans-grid">${planCard('monthly','Monthly','1200','30','🗓️',false)}${planCard('quarterly','Quarterly','3600','90','⭐',true)}${planCard('annual','Annual','12000','365','🏆',false)}</div>`;
+  const m = S;
+  // If member has a custom plan, show it as a highlighted option alongside standard plans
+  const hasCustom = m.plan === 'custom';
+  const customCard = hasCustom ? `
+    <div class="plan-card pop" style="border-color:#7c3aed;background:rgba(124,58,237,0.06);">
+      <div class="plan-pop-tag" style="background:#7c3aed;">YOUR PLAN</div>
+      <div class="plan-name">🎛️ Custom</div>
+      <div class="plan-price"><sup>₹</sup>${m.customAmount||0}</div>
+      <div class="plan-period">per ${m.customDays||30} days</div>
+      <ul class="plan-feats">
+        <li><span class="ck">✓</span>Full gym access</li>
+        <li><span class="ck">✓</span>All equipment</li>
+        <li><span class="ck">✓</span>Custom pricing</li>
+        <li><span class="ck">✓</span>Locker access</li>
+      </ul>
+      <button class="plan-btn" style="background:#7c3aed;" onclick="confirmPlanSelect('custom',${m.customAmount||0},'Custom Plan')">Renew Same Plan</button>
+    </div>` : '';
+  return `<div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">💪 ${hasCustom?'Your Custom Plan + Standard Options':'Membership Plans'}</div>
+  <div class="plans-grid">${customCard}${planCard('monthly','Monthly','800','30','🗓️',false)}${planCard('quarterly','Quarterly','2100','90','⭐',!hasCustom)}${planCard('annual','Annual','7500','365','🏆',false)}</div>`;
 }
 
 function planCard(plan,name,price,days,icon,pop) {
@@ -1888,8 +2175,9 @@ function planCard(plan,name,price,days,icon,pop) {
 }
 
 function confirmPlanSelect(plan, amount, label) {
-  const planDays = {monthly:30, quarterly:90, annual:365};
-  const ok = confirm(`⚠️ Confirm Plan Selection\n\nPlan: ${label}\nAmount: ₹${amount}\nDuration: ${planDays[plan]} days\n\nOnce selected, you cannot change the plan until it expires.\nThe plan activates only after the gym admin confirms your payment.\n\nProceed?`);
+  const planDays = {monthly:30, quarterly:90, annual:365, custom: S.customDays||30};
+  const days = planDays[plan] || 30;
+  const ok = confirm(`⚠️ Confirm Plan Selection\n\nPlan: ${label}\nAmount: ₹${amount}\nDuration: ${days} days\n\nOnce selected, you cannot change the plan until it expires.\nThe plan activates only after the gym admin confirms your payment.\n\nProceed?`);
   if (!ok) return;
   openPayModal(plan, amount, label);
   sendRenewalRequest(plan, amount, label);
@@ -1908,7 +2196,7 @@ async function sendRenewalRequest(plan, amount, label) {
 
 async function requestRenewalFromAdmin() {
   const d = getDaysLeft(S);
-  const planName = PLAN_NAME[S.plan] || S.plan || 'current plan';
+  const planName = mPlanLabel(S);
   const ok = confirm(`Send renewal request to admin?\n\nThis will notify the gym admin that you want to renew your ${planName} membership.\n\nThey will contact you to confirm payment.`);
   if (!ok) return;
   try {
@@ -1928,9 +2216,9 @@ function renderActiveCard() {
   const m = S;
   if (!m.plan || !m.admissionDate) { renderSelectPlan(); return; }
   const d = getDaysLeft(m), exp = getExpiry(m);
-  const pct = Math.max(0,Math.min(100,(d/PLAN_DAYS[m.plan])*100));
+  const totalDaysActive = m.plan === 'custom' ? (m.customDays||30) : (PLAN_DAYS[m.plan]||30);
+  const pct = Math.max(0,Math.min(100,(d/totalDaysActive)*100));
   const cls = d<=3?'danger':d<=7?'warn':'';
-  // Daily tracking label
   const trackMsg = d<=0 ? 'Membership expired!' : d===1 ? '⚠️ Last day! Renew immediately.' : d<=3 ? `🚨 Only ${d} days left! Renew now.` : d<=7 ? `⏰ ${d} days left — expiring soon.` : `${d} days remaining`;
   $('m-status-box').innerHTML = '';
   $('m-mem-card').innerHTML = `
@@ -1948,13 +2236,9 @@ function renderActiveCard() {
       <div class="prog-bar"><div class="prog-fill ${cls}" style="width:${pct}%"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:8px;">
         <span>${Math.round(100-pct)}% used</span>
-        <span>${PLAN_NAME[m.plan]||m.plan}</span>
+        <span>${mPlanLabel(m)}</span>
       </div>
       ${d<=7&&d>2?`<div style="margin-top:12px;padding:11px 14px;background:var(--accent-dim);border:1px solid rgba(255,60,0,0.2);border-radius:9px;font-size:13px;color:var(--accent);">⚠️ Expiring in ${d} days — <a href="https://wa.me/918979890960" target="_blank" style="color:var(--accent);font-weight:700;">WhatsApp to Renew</a></div>`:''}
-      ${d<=0?`<div style="margin-top:12px;padding:11px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:9px;font-size:13px;color:var(--red);">❌ Expired — contact gym to renew</div>`:''}
-      <div style="margin-top:12px;">
-        <button class="btn" style="background:transparent;border:1px solid var(--border2);color:var(--text2);font-size:13px;padding:10px;" onclick="requestRenewalFromAdmin()">📨 Request Renewal Confirmation from Admin</button>
-      </div>
     </div>`;
   // Recent payments (paid only)
   api('GET',`/api/payments/member/${m.id}`).then(pays => {
@@ -1965,7 +2249,6 @@ function renderActiveCard() {
         : `<div class="empty">No confirmed payments yet.</div>`}
     </div>`;
   });
-  // Schedule the daily midnight refresh
   scheduleMidnightRefresh();
 }
 
@@ -2016,20 +2299,24 @@ function renderMembershipFull() {
     return;
   }
   const d = getDaysLeft(m), exp = getExpiry(m);
-  const pct = Math.max(0,Math.min(100,(d/PLAN_DAYS[m.plan])*100));
+  const totalDaysFull = m.plan === 'custom' ? (m.customDays||30) : (PLAN_DAYS[m.plan]||30);
+  const pct = Math.max(0,Math.min(100,(d/totalDaysFull)*100));
   const cls = d<=3?'danger':d<=7?'warn':'';
+  const planDisplay = m.plan === 'custom'
+    ? `Custom ${m.customDays||'?'}d ₹${m.customAmount||'?'}`
+    : (PLAN_NAME[m.plan] || m.plan); // standard plan
   $('m-mem-full').innerHTML = `
     <div class="m-profile">
       <div class="m-avatar">${m.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
       <div><div class="m-name">${m.name}</div>
-      <div style="margin-top:6px;display:flex;gap:7px;flex-wrap:wrap;"><span class="m-tag">${PLAN_NAME[m.plan]}</span><span class="badge badge-active">Active</span></div></div>
+      <div style="margin-top:6px;display:flex;gap:7px;flex-wrap:wrap;"><span class="m-tag">${planDisplay}</span><span class="badge badge-active">Active</span></div></div>
     </div>
     <div class="prog-wrap">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
         <div><div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Joined</div><div style="font-size:15px;font-weight:600;">${fmtDate(m.admissionDate)}</div></div>
         <div><div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Expires</div><div style="font-size:15px;font-weight:600;">${fmtDate(exp.toISOString().split('T')[0])}</div></div>
         <div><div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Days Left</div><div class="days-big ${cls}" style="font-size:34px;">${d<=0?'EXPIRED':d}</div></div>
-        <div><div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Plan</div><div style="font-size:15px;font-weight:600;">${PLAN_NAME[m.plan]}</div></div>
+        <div><div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Plan</div><div style="font-size:15px;font-weight:600;">${planDisplay}</div></div>
       </div>
       <div class="prog-bar"><div class="prog-fill ${cls}" style="width:${pct}%"></div></div>
       <div style="margin-top:5px;text-align:right;font-size:11px;color:var(--text3);">${Math.round(100-pct)}% of plan used</div>
@@ -2042,9 +2329,24 @@ function renderMembershipFull() {
 async function loadMemberPayments() {
   const pays = await api('GET',`/api/payments/member/${S.id}`);
   const paid = Array.isArray(pays) ? pays.filter(p=>p.status==='paid') : [];
+  const getPName = p => p.plan === 'custom'
+    ? `Custom (${p.customDays||S.customDays||'?'}d) ₹${p.amount}`
+    : (PLAN_NAME[p.plan] || p.plan);
   $('m-pay-hist').innerHTML = `<div class="card-head"><span class="card-title">Confirmed Payments</span></div>` +
     (paid.length
-      ? paid.map(p=>`<div class="pay-row"><div style="display:flex;align-items:center;gap:10px;"><div class="pay-ico">💳</div><div><div style="font-size:13px;font-weight:600;">${PLAN_NAME[p.plan]||p.plan}</div><div style="font-size:11px;color:var(--text3);">${fmtDate(p.date)}</div></div></div><div style="text-align:right;"><div class="pay-amt">₹${p.amount}</div><span class="badge badge-paid">paid</span></div></div>`).join('')
+      ? paid.map(p=>`<div class="pay-row">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="pay-ico">💳</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;">${getPName(p)}</div>
+              <div style="font-size:11px;color:var(--text3);">${fmtDate(p.date)}</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="pay-amt">₹${p.amount}</div>
+            <span class="badge badge-paid">paid</span>
+          </div>
+        </div>`).join('')
       : `<div class="empty"><div class="empty-icon">💳</div>No confirmed payments yet.</div>`);
 }
 
@@ -2054,16 +2356,28 @@ async function loadMemberNotifs() {
   const unread = mine.filter(n=>!n.read).length;
   setBadge('badge-mnotif', unread);
   const card = $('m-notif-card');
-  if (card) card.innerHTML = mine.length
-    ? mine.map(n=>`<div class="notif-item ${n.read?'':'unread'}">
-        <div class="notif-ico ${n.type}">${n.icon}</div>
+  if (!card) return;
+  card.innerHTML = mine.length
+    ? mine.map(n=>`<div class="notif-item ${n.read?'':'unread'}" onclick="markMemberNotifRead('${n.id}',this)">
+        <div class="notif-ico ${n.type}">${n.icon||'🔔'}</div>
         <div class="notif-body">
           <div class="notif-title">${n.title}</div>
-          <div class="notif-desc">${n.desc}</div>
+          <div class="notif-desc">${n.desc||''}</div>
           <div class="notif-time">${new Date(n.time).toLocaleString('en-IN')}</div>
         </div>
       </div>`).join('')
     : `<div class="empty"><div class="empty-icon">🔔</div>No notifications yet.</div>`;
+}
+
+async function markMemberNotifRead(id, el) {
+  if (el && el.classList.contains('unread')) {
+    el.classList.remove('unread');
+    await api('PUT',`/api/notifications/${id}/read`);
+    // Refresh badge count
+    const card = $('m-notif-card');
+    const stillUnread = card ? card.querySelectorAll('.notif-item.unread').length : 0;
+    setBadge('badge-mnotif', stillUnread);
+  }
 }
 
 async function doChangePw() {
@@ -2121,17 +2435,17 @@ function openPayModal(plan, amount, label) {
   curPayPlan = plan; curPayAmt = amount;
   $('pay-amount').textContent = `₹${amount}`;
   $('pay-plan-label').textContent = `${label} — choose how to pay`;
-  const upi = `upi://pay?pa=8979890960-3@ybl&pn=BrotherGym&am=${amount}&cu=INR&tn=${encodeURIComponent(label)}`;
+  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=BrotherGym&am=${amount}&cu=INR&tn=${encodeURIComponent(label)}`;
   const qrEl = $('portalQR'); qrEl.innerHTML = '';
   try {
     new QRCode(qrEl,{text:upi,width:180,height:180,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
   } catch(e) {
-    qrEl.innerHTML = `<div style="padding:20px;color:var(--text3);font-size:12px;">QR unavailable — use UPI ID: 8979890960-3@ybl</div>`;
+    qrEl.innerHTML = `<div style="padding:20px;color:var(--text3);font-size:12px;">QR unavailable — use UPI ID: dhakarshivendra1@ibl</div>`;
   }
   openModal('payModal');
 }
 function openUPIApp() {
-  const upi = `upi://pay?pa=8979890960-3@ybl&pn=BrotherGym&am=${curPayAmt}&cu=INR&tn=${encodeURIComponent(PLAN_NAME[curPayPlan]||'Membership')}`;
+  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=BrotherGym&am=${curPayAmt}&cu=INR&tn=${encodeURIComponent(PLAN_NAME[curPayPlan]||'Membership')}`;
   window.location.href = upi;
 }
 
@@ -2143,22 +2457,43 @@ let deferredInstall = null;
 function initPWA() {
   const realDomain = location.hostname.includes('onrender.com')||location.hostname.includes('brothersgym')||location.hostname==='localhost';
   if ('serviceWorker' in navigator && realDomain) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
+    navigator.serviceWorker.register('/sw.js').then(async reg => {
       swReg = reg;
       function syncSession() {
         if (navigator.serviceWorker.controller && S?.phone) {
           navigator.serviceWorker.controller.postMessage({type:'SAVE_SESSION',session:{phone:S.phone,id:S.id}});
         }
       }
-      navigator.serviceWorker.ready.then(() => { syncSession(); updateBell(); });
+      // Also sync session when a new SW takes control (fresh install / update)
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        syncSession();
+      });
+      navigator.serviceWorker.ready.then(async () => {
+        syncSession();
+        updateBell();
+        // Register periodic background sync (fires every 30 min even when app closed)
+        try {
+          if ('periodicSync' in reg) {
+            const status = await navigator.permissions.query({name:'periodic-background-sync'});
+            if (status.state === 'granted') {
+              await reg.periodicSync.register('gym-poll', {minInterval: 30 * 60 * 1000});
+            }
+          }
+        } catch(e) {}
+        // Also register one-shot background sync
+        try {
+          if ('sync' in reg) await reg.sync.register('poll-notifications');
+        } catch(e) {}
+      });
       setTimeout(syncSession, 2000);
       navigator.serviceWorker.addEventListener('message', e => {
         if (!e.data) return;
         if (e.data.type==='navigate' && S?.type==='member') {
           const sec = e.data.section;
-          if (sec==='live')         memberNav('live');
-          else if (sec==='expiry')  memberNav('membership');
+          if (sec==='live')              memberNav('live');
+          else if (sec==='expiry')       memberNav('membership');
           else if (sec==='announcement') memberNav('announce');
+          else if (sec==='reset')        memberNav('settings');
         }
       });
     }).catch(e => console.log('SW err:',e));
@@ -2167,7 +2502,10 @@ function initPWA() {
     e.preventDefault(); deferredInstall = e;
     if (!localStorage.getItem('_pwa_dismiss')) setTimeout(() => $('pwaBanner').classList.add('show'), 3000);
   });
-  window.addEventListener('appinstalled', () => { $('pwaBanner').classList.remove('show'); toast('✅ App Installed!','Tap the icon on your home screen.','ok'); });
+  window.addEventListener('appinstalled', () => {
+    $('pwaBanner').classList.remove('show');
+    toast('✅ App Installed!','Tap the icon on your home screen.','ok');
+  });
   if (S) { $('pushBell').style.display='flex'; updateBell(); }
 }
 
@@ -2176,7 +2514,7 @@ function dismissPWA() { $('pwaBanner').classList.remove('show'); localStorage.se
 
 async function togglePush() {
   if (!('Notification' in window)) { toast('❌ Not Supported','Notifications not supported in this browser.','warn'); return; }
-  if (Notification.permission==='denied') { toast('🔕 Blocked','Enable notifications in browser settings.','warn'); return; }
+  if (Notification.permission==='denied') { toast('🔕 Blocked','Enable notifications in browser/phone settings.','warn'); return; }
   const isOn = !!localStorage.getItem('_push') && Notification.permission==='granted';
   if (isOn) {
     localStorage.removeItem('_push');
@@ -2186,13 +2524,33 @@ async function togglePush() {
     const r = await Notification.requestPermission();
     if (r === 'granted') {
       localStorage.setItem('_push','1');
-      if (S) await api('POST','/api/push/subscribe',{phone:S.phone||S.type});
-      if (swReg) {
-        swReg.showNotification('✅ Notifications Enabled!',{body:'You will now get gym alerts.',icon:'/icon-192.png',badge:'/icon-192.png',tag:'test',vibrate:[100,50,100]});
+      // CRITICAL: call subscribePush to register the actual Web Push subscription
+      // This saves the PushSubscription object (not just phone) to the server
+      if (S?.phone) {
+        try { await subscribePush(S.phone); } catch(e) { console.warn('Push subscribe failed:', e); }
       }
-      toast('🔔 Notifications ON!','Live, expiry &amp; announcement alerts enabled.','ok');
+      // Register background sync
+      if (swReg) {
+        try { await swReg.sync.register('poll-notifications'); } catch(e) {}
+        try {
+          if ('periodicSync' in swReg) {
+            const status = await navigator.permissions.query({name:'periodic-background-sync'});
+            if (status.state === 'granted') await swReg.periodicSync.register('gym-poll',{minInterval:30*60*1000});
+          }
+        } catch(e) {}
+        // Also save session to SW cache NOW so bgPoll() can find it
+        if (navigator.serviceWorker.controller && S?.phone) {
+          navigator.serviceWorker.controller.postMessage({type:'SAVE_SESSION', session:{phone:S.phone, id:S.id}});
+        }
+        // Test notification
+        swReg.showNotification('✅ Notifications Enabled!',{
+          body:'You will now receive gym alerts even when the app is closed.',
+          icon:'/icon-192.png', badge:'/icon-192.png', tag:'test', vibrate:[100,50,100]
+        });
+      }
+      toast('🔔 Notifications ON!','You will get alerts even when app is closed.','ok');
     } else {
-      toast('❌ Denied','Allow notifications in your browser.','warn');
+      toast('❌ Denied','Allow notifications in your browser/phone settings.','warn');
     }
   }
   updateBell();
@@ -2212,19 +2570,35 @@ async function pollPush() {
   try {
     const msgs = await api('GET',`/api/push/poll?phone=${encodeURIComponent(S.phone)}`);
     if (!Array.isArray(msgs) || !msgs.length) return;
-    const fresh = msgs.filter(m => !isSeen(String(m._id||m.id||'')));
-    for (const m of fresh) {
-      const id = String(m._id||m.id||Date.now());
-      markSeen(id);
-      const typeMap = {live:'ok',expiry:'warn',announcement:'info',renewal:'ok'};
-      toast(m.title, m.body||'', typeMap[m.type]||'info');
-      if (Notification.permission==='granted') {
-        const opts = {body:m.body,icon:'/icon-192.png',badge:'/icon-192.png',tag:m.type||'gym',renotify:true,vibrate:m.type==='live'?[300,100,300]:[200,100,200],data:{url:m.url||'/portal',type:m.type}};
-        if (swReg) swReg.showNotification(m.title,opts);
-        else { try { new Notification(m.title,opts); } catch(e) {} }
+    // Filter: only truly new ones not yet seen in localStorage
+    const fresh = msgs.filter(m => {
+      const id = String(m._id || m.id || '');
+      return id && !isSeen(id);
+    });
+    if (!fresh.length) return;
+    // Mark seen locally FIRST so we never show again
+    fresh.forEach(m => markSeen(String(m._id || m.id || '')));
+    // Mark delivered on server immediately
+    await api('POST','/api/push/mark-delivered',{ids: fresh.map(m => String(m._id))});
+    // Show ONLY via Service Worker native notification (no toast popups)
+    // Toast popups only for admin actions, NOT for background push messages
+    if (Notification.permission === 'granted' && swReg) {
+      for (const m of fresh) {
+        const tagMap = {live:'gym-live', expiry:'gym-expiry', announcement:'gym-ann', renewal:'gym-renew', reset:'gym-reset'};
+        swReg.showNotification(m.title || 'Dhairya Workout Zone', {
+          body: m.body || '',
+          icon: '/icon-192.png',
+          badge: '/icon-192.png',
+          tag: tagMap[m.type] || 'gym-general',
+          renotify: true,
+          requireInteraction: ['live','expiry','announcement','reset'].includes(m.type),
+          vibrate: m.type === 'live' ? [300,100,300] : [200,100,200],
+          data: {url: m.url || '/portal', type: m.type}
+        });
       }
     }
-    if (fresh.length) await api('POST','/api/push/mark-delivered',{ids:fresh.map(m=>String(m._id))});
+    // Refresh notification badge in sidebar
+    loadMemberNotifs();
   } catch(e) {}
 }
 
@@ -2232,8 +2606,15 @@ function startPoll() {
   clearInterval(window._pollTimer);
   window._pollTimer = setInterval(pollPush, 30000);
   setTimeout(pollPush, 5000);
+  // Poll immediately when tab becomes visible again (user returns to app)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') pollPush();
+  });
+  // Poll when back online after being offline
+  window.addEventListener('online', () => pollPush());
 }
-
+// NOTE: Web Push subscription is handled by subscribePush() above which uses the correct VAPID key.
+// The enablePush() duplicate has been removed.
 // ════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════
