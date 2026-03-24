@@ -59,7 +59,51 @@ app.get('/icon-512.png', (req,res) => {
   res.send(gymIconSVG(512));
 });
 
-// ── Static & pages ────────────────────────────────────────
+// ── iOS Splash Screens — generated server-side as SVG ─────────────────────
+function splashSVG(w, h) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <rect width="${w}" height="${h}" fill="#090b0f"/>
+  <!-- Glow -->
+  <radialGradient id="g" cx="50%" cy="48%" r="40%">
+    <stop offset="0%" stop-color="#ff3c00" stop-opacity="0.18"/>
+    <stop offset="100%" stop-color="#090b0f" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="${w}" height="${h}" fill="url(#g)"/>
+  <!-- Dumbbell icon -->
+  <g transform="translate(${w/2-60},${h/2-110}) scale(1.1)">
+    <rect x="0"   y="28" width="24" height="52" rx="6"  fill="#ff3c00"/>
+    <rect x="86"  y="28" width="24" height="52" rx="6"  fill="#ff3c00"/>
+    <rect x="20"  y="38" width="16" height="32" rx="4"  fill="#ff3c00"/>
+    <rect x="74"  y="38" width="16" height="32" rx="4"  fill="#ff3c00"/>
+    <rect x="34"  y="45" width="42" height="18" rx="5"  fill="#ff3c00"/>
+  </g>
+  <!-- Gym Name -->
+  <text x="${w/2}" y="${h/2+30}" font-family="Arial Black,sans-serif" font-weight="900"
+        font-size="${Math.round(w*0.088)}" fill="#ff3c00" text-anchor="middle"
+        letter-spacing="3">DHAIRYA</text>
+  <text x="${w/2}" y="${h/2+30+Math.round(w*0.088)+8}" font-family="Arial,sans-serif" font-weight="400"
+        font-size="${Math.round(w*0.038)}" fill="#7a7f8a" text-anchor="middle"
+        letter-spacing="6">WORKOUT ZONE</text>
+  <!-- Tagline -->
+  <text x="${w/2}" y="${h/2+30+Math.round(w*0.088)+8+Math.round(w*0.038)+22}" font-family="Arial,sans-serif"
+        font-size="${Math.round(w*0.026)}" fill="#444" text-anchor="middle"
+        letter-spacing="2">AGRA • UNISEX GYM</text>
+</svg>`;
+}
+
+const splashSizes = [
+  [640,1136],[750,1334],[1242,2208],[1125,2436],[828,1792],
+  [1242,2688],[1170,2532],[1284,2778],[1179,2556],[1290,2796]
+];
+splashSizes.forEach(([w,h]) => {
+  app.get(`/splash-${w}x${h}.png`, (req,res) => {
+    res.setHeader('Content-Type','image/svg+xml');
+    res.setHeader('Cache-Control','public,max-age=86400');
+    res.send(splashSVG(w,h));
+  });
+});
+
+
 app.use(express.static(path.join(__dirname, '../public')));
 app.get('/portal', (req,res) => res.sendFile(path.join(__dirname,'../public/portal.html')));
 app.get('/',       (req,res) => res.sendFile(path.join(__dirname,'../public/index.html')));

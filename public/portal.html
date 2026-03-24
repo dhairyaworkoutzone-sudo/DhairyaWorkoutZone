@@ -2,15 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Dhairya Workout Zone — Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
+
+<!-- ═══ iOS PWA — REQUIRED FOR "ADD TO HOME SCREEN" ═══ -->
 <meta name="theme-color" content="#ff3c00">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DhairyaGym">
+
+<!-- Apple Touch Icons — multiple sizes for all iPhones/iPads -->
 <link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+
+<!-- iOS Splash Screens — required for proper launch from home screen -->
+<!-- iPhone SE (1st & 2nd gen) 640×1136 -->
+<link rel="apple-touch-startup-image" media="(device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2)" href="/splash-640x1136.png">
+<!-- iPhone 8 / 7 / 6 750×1334 -->
+<link rel="apple-touch-startup-image" media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2)" href="/splash-750x1334.png">
+<!-- iPhone 8 Plus / 7 Plus / 6 Plus 1242×2208 -->
+<link rel="apple-touch-startup-image" media="(device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3)" href="/splash-1242x2208.png">
+<!-- iPhone X / XS / 11 Pro 1125×2436 -->
+<link rel="apple-touch-startup-image" media="(device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3)" href="/splash-1125x2436.png">
+<!-- iPhone XR / 11 828×1792 -->
+<link rel="apple-touch-startup-image" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2)" href="/splash-828x1792.png">
+<!-- iPhone XS Max / 11 Pro Max 1242×2688 -->
+<link rel="apple-touch-startup-image" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3)" href="/splash-1242x2688.png">
+<!-- iPhone 12 / 13 / 14 1170×2532 -->
+<link rel="apple-touch-startup-image" media="(device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3)" href="/splash-1170x2532.png">
+<!-- iPhone 12 Pro Max / 13 Pro Max / 14 Plus 1284×2778 -->
+<link rel="apple-touch-startup-image" media="(device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3)" href="/splash-1284x2778.png">
+<!-- iPhone 14 Pro 1179×2556 -->
+<link rel="apple-touch-startup-image" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3)" href="/splash-1179x2556.png">
+<!-- iPhone 14 Pro Max / 15 Pro Max 1290×2796 -->
+<link rel="apple-touch-startup-image" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3)" href="/splash-1290x2796.png">
+<!-- iPhone 15 / 15 Plus 1179×2556 -->
+<link rel="apple-touch-startup-image" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3)" href="/splash-1179x2556.png">
 <style>
 /* ══════════════════════════════════════════
    DESIGN TOKENS
@@ -39,7 +74,25 @@
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{font-size:16px;-webkit-font-smoothing:antialiased;}
-body{background:var(--bg);color:var(--text);font-family:var(--fb);overflow-x:hidden;min-height:100vh;line-height:1.5;}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);overflow-x:hidden;min-height:100vh;line-height:1.5;
+  /* iOS safe area for notch / Dynamic Island / home indicator */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Fix for iOS standalone mode — prevent white flash on load */
+@media (display-mode: standalone) {
+  body { background: var(--bg); }
+  .sidebar { padding-top: env(safe-area-inset-top); }
+  .hbg { top: calc(12px + env(safe-area-inset-top)); }
+}
+
+/* iOS momentum scrolling */
+.sidebar, .main, .card-scroll, .live-chat-messages {
+  -webkit-overflow-scrolling: touch;
+}
 
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:3px;height:3px;}
@@ -2435,7 +2488,7 @@ function openPayModal(plan, amount, label) {
   curPayPlan = plan; curPayAmt = amount;
   $('pay-amount').textContent = `₹${amount}`;
   $('pay-plan-label').textContent = `${label} — choose how to pay`;
-  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=DhairyaGym&am=${amount}&cu=INR&tn=${encodeURIComponent(label)}`;
+  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=Mr%20Shivendra%20Dhakar&mc=0000&mode=02&purpose=00=${amount}&cu=INR&tn=${encodeURIComponent(label)}`;
   const qrEl = $('portalQR'); qrEl.innerHTML = '';
   try {
     new QRCode(qrEl,{text:upi,width:180,height:180,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
@@ -2445,7 +2498,7 @@ function openPayModal(plan, amount, label) {
   openModal('payModal');
 }
 function openUPIApp() {
-  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=DhairyaGym&am=${curPayAmt}&cu=INR&tn=${encodeURIComponent(PLAN_NAME[curPayPlan]||'Membership')}`;
+  const upi = `upi://pay?pa=dhakarshivendra1@ibl&pn=Mr%20Shivendra%20Dhakar&mc=0000&mode=02&purpose=00=${curPayAmt}&cu=INR&tn=${encodeURIComponent(PLAN_NAME[curPayPlan]||'Membership')}`;
   window.location.href = upi;
 }
 

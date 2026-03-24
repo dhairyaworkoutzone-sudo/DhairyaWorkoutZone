@@ -1,32 +1,25 @@
 {
-  "name": "Dhairya-Workout-Zone Portal",
-  "short_name": "Dhairya-Workout-Zone",
-  "description": "The Dhairya-Workout-Zone — Member & Admin Portal",
+  "name": "Dhairya Workout Zone",
+  "short_name": "DhairyaGym",
+  "description": "Dhairya Workout Zone — Member & Admin Portal, Agra",
   "start_url": "/portal",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#090b0f",
   "theme_color": "#ff3c00",
   "orientation": "portrait-primary",
+  "lang": "en-IN",
   "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    {"src": "/icon-192.png","sizes": "192x192","type": "image/png","purpose": "any maskable"},
+    {"src": "/icon-512.png","sizes": "512x512","type": "image/png","purpose": "any maskable"},
+    {"src": "/icon-192.png","sizes": "180x180","type": "image/png","purpose": "any"},
+    {"src": "/icon-192.png","sizes": "152x152","type": "image/png","purpose": "any"},
+    {"src": "/icon-192.png","sizes": "167x167","type": "image/png","purpose": "any"}
   ],
   "categories": ["health", "fitness"],
   "shortcuts": [
-    {
-      "name": "My Membership",
-      "url": "/portal",
-      "description": "View my membership status"
-    }
-  ]
+    {"name": "My Membership","url": "/portal","description": "View my membership status"}
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
