@@ -407,7 +407,7 @@ app.get('/api/members/me', requireDB, async (req,res) => {
   } catch(e) { res.json(null); }
 });
 
-
+app.get('/api/members', requireDB, async (req,res) => {
   try {
     const members = await db.collection('members').find({}).sort({createdAt:-1}).toArray();
     res.json(members.map(sanitize));
