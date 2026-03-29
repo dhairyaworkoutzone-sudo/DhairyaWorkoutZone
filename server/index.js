@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 webpush.setVapidDetails(
-  "mailto:dhairyaworkoutzone@gmail.com",
+  "mailto:dhakarshivendra1@gmail.com",
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );
@@ -396,7 +396,18 @@ app.post('/api/auth/change-password', requireDB, async (req,res) => {
 //  MEMBERS
 // ════════════════════════════════════════════════════════
 
-app.get('/api/members', requireDB, async (req,res) => {
+// ── Fast single-member lookup (for member portal load) ────
+app.get('/api/members/me', requireDB, async (req,res) => {
+  try {
+    let {phone} = req.query;
+    phone = String(phone||'').replace(/\D/g,'').slice(-10);
+    if (!phone) return res.json(null);
+    const member = await db.collection('members').findOne({phone});
+    res.json(member ? sanitize(member) : null);
+  } catch(e) { res.json(null); }
+});
+
+
   try {
     const members = await db.collection('members').find({}).sort({createdAt:-1}).toArray();
     res.json(members.map(sanitize));
