@@ -3,18 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="google-site-verification" content="Bwje3DCpmp6CDxgBChRNtTV1fl8QlIikO2RdQ1_aIg0" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Dhairya Workout Zone | Unisex Gym – Agra</title>
 <meta name="description" content="Dhairya Workout Zone — Premium unisex gym in Agra, Sector 7 Lohamandi. Expert training, modern equipment. Join at ₹1200/month.">
-<meta name="keywords" content="gym agra, unisex gym agra, workout zone agra, fitness center agra, lohamandi gym, sector 7 gym agra">
+<meta name="keywords" content="gym agra, unisex gym agra, workout zone agra, fitness agra, lohamandi gym, sector 7 gym agra">
 <meta property="og:title" content="Dhairya Workout Zone | Unisex Gym – Agra">
 <meta property="og:description" content="Premium unisex gym in Agra. Expert coaching, modern equipment. ₹1200/month.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dhairyaworkoutzone.onrender.com/">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#ff3c00">
 <link rel="canonical" href="https://dhairyaworkoutzone.onrender.com/">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@300;400;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@300;400;600&display=swap"></noscript>
+
+
 <style>
 :root {
   --primary: #ff3c00;
@@ -92,6 +97,7 @@ nav a:hover { color:var(--text);background:var(--surface); }
 nav a.cta-nav { background:var(--primary);color:white;font-weight:700;letter-spacing:1px;padding:8px 16px; }
 nav a.cta-nav:hover { background:#e03500;color:white; }
 
+/* HAMBURGER — properly contained */
 .menu-btn {
   display: none;
   flex-direction: column;
@@ -119,6 +125,7 @@ nav a.cta-nav:hover { background:#e03500;color:white; }
   flex-shrink: 0;
 }
 
+/* MOBILE NAV */
 .mobile-nav {
   display: none;
   position: fixed;
@@ -171,6 +178,7 @@ nav a.cta-nav:hover { background:#e03500;color:white; }
   justify-content: center;
 }
 .mobile-nav .mob-btn {
+  font-size: 14px;
   background: var(--primary);
   color: white !important;
   padding: 12px 20px;
@@ -181,6 +189,7 @@ nav a.cta-nav:hover { background:#e03500;color:white; }
   font-size: 14px !important;
 }
 .mobile-nav .mob-btn-ol {
+  font-size: 14px;
   border: 2px solid var(--primary);
   color: var(--primary) !important;
   padding: 12px 20px;
@@ -545,9 +554,13 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
 }
 @media (max-width: 480px) {
   .gallery-grid { grid-template-columns:1fr; }
-  .hero h1 { font-size:clamp(44px,14vw,80px); }
-  .pricing-grid { grid-template-columns:1fr; }
-  .section { padding:60px 5%; }
+  .about-features { grid-template-columns:1fr; }
+  #member-portal .feat-grid { grid-template-columns:1fr 1fr; }
+  .hero-stats { gap:16px; }
+  .stat-num { font-size:32px; }
+  .timing-bar { flex-direction:column;gap:8px;text-align:center; }
+  .timing-dot { display:none; }
+  .hero { padding:90px 5% 50px; }
 }
 </style>
 </head>
@@ -562,17 +575,18 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <nav>
     <a href="#about">About</a>
     <a href="#pricing">Pricing</a>
-    <a href="#live">🔴 Live</a>
     <a href="#trainers">Trainers</a>
     <a href="#gallery">Gallery</a>
+    <a href="#faq">FAQ</a>
     <a href="#contact">Contact</a>
     <a href="#instagram">Instagram</a>
+    <a href="#live" style="color:#ff3c00;font-weight:700;">🔴 Live</a>
     <a href="#location">Location</a>
-    <a href="/portal" class="cta-nav">👤 Member Login</a>
+    <a href="#pricing" class="cta-nav" onclick="payNow(800);return false;">Join Now</a>
   </nav>
-  <button class="menu-btn" onclick="toggleMenu()" aria-label="Menu">
+  <div class="menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
-  </button>
+  </div>
 </header>
 
 <!-- MOBILE NAV -->
@@ -599,19 +613,19 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <div>
     <div class="hero-badge">🔥 Now Accepting New Members</div>
     <h1>
-      <span class="line1">Forge Your</span>
-      <span class="line2">Best Self</span>
+      <span class="line1">Build Your</span>
+      <span class="line2">Elite Body</span>
     </h1>
-    <p>Premium unisex training in Agra. Certified coaching, modern equipment, real results. Just ₹1200/month.</p>
+    <p>Premium training. Certified coaches. Results that last. Starting at just ₹800/month.</p>
     <div class="hero-cta">
-      <button class="btn-primary" onclick="payNow(1200)">Join Now — ₹1200/mo</button>
+      <button class="btn-primary" onclick="payNow(800)">Join Now — ₹800/mo</button>
       <a href="#about" class="btn-outline">Explore the Gym</a>
     </div>
     <div class="hero-stats">
-      <div class="stat-item"><div class="stat-num">300+</div><div class="stat-label">Active Members</div></div>
-      <div class="stat-item"><div class="stat-num">2+</div><div class="stat-label">Expert Trainers</div></div>
+      <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">Active Members</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Expert Trainers</div></div>
       <div class="stat-item"><div class="stat-num">5★</div><div class="stat-label">Community Rating</div></div>
-      <div class="stat-item"><div class="stat-num">Unisex</div><div class="stat-label">Inclusive Space</div></div>
+      <div class="stat-item"><div class="stat-num">6yr</div><div class="stat-label">In Operation</div></div>
     </div>
   </div>
 </section>
@@ -622,7 +636,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <div class="timing-dot"></div>
   <div class="timing-item">🌆 Evening: 4:00 PM – 10:00 PM</div>
   <div class="timing-dot"></div>
-  <div class="timing-item">📞 +91 08979890960</div>
+  <div class="timing-item">📞 +91 8979890960</div>
 </div>
 
 <!-- ABOUT -->
@@ -630,7 +644,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <div class="about-grid">
     <div>
       <div class="section-label">Who We Are</div>
-      <h2 class="section-title">More Than A Gym. A Zone of Strength.</h2>
+      <h2 class="section-title">More Than A Gym. A Brotherhood.</h2>
       <p class="section-sub">Dhairya Workout Zone is built on discipline, dedication, and real results. Whether you're starting your journey or chasing new peaks — our space, trainers, and community have you covered. Everyone welcome.</p>
       <div class="about-features">
         <div class="feature-item"><div class="feature-icon">🏋️</div><div class="feature-title">Modern Equipment</div><div class="feature-desc">Top-tier machines for every muscle group.</div></div>
@@ -643,7 +657,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
       <div class="about-img-wrap">
         <img src="hero.jpeg" alt="Dhairya Workout Zone" onerror="this.outerHTML='<div style=\'width:100%;height:100%;min-height:360px;background:linear-gradient(160deg,#0d0200,#2a0a00,#0d0200);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;\'><div style=\'font-size:80px;\'>🏋️</div><div style=\'font-family:Barlow Condensed,sans-serif;font-size:26px;font-weight:900;color:#ff3c00;text-transform:uppercase;letter-spacing:2px;text-align:center;\'>Dhairya<br>Workout Zone</div><div style=\'font-size:11px;letter-spacing:3px;color:#7a7f8a;text-transform:uppercase;\'>Agra, Uttar Pradesh</div></div>'">
       </div>
-      <div class="about-badge"><strong>₹1200</strong>Per Month</div>
+      <div class="about-badge"><strong>₹800</strong>Per Month</div>
     </div>
   </div>
 </section>
@@ -658,7 +672,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <div class="pricing-grid">
     <div class="pricing-card">
       <div class="plan-name">Monthly</div>
-      <div class="plan-price"><sup>₹</sup>1200</div>
+      <div class="plan-price"><sup>₹</sup>800</div>
       <div class="plan-period">per month</div>
       <ul class="plan-features">
         <li><span class="check">✓</span>Full Gym Access</li>
@@ -667,12 +681,12 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
         <li><span class="check">✓</span>Locker Facility</li>
         <li><span class="check">✓</span>Group Sessions</li>
       </ul>
-      <button class="btn-primary" style="width:100%;" onclick="payNow(1200)">Get Started — ₹1200</button>
+      <button class="btn-primary" style="width:100%;" onclick="payNow(800)">Get Started — ₹800</button>
     </div>
     <div class="pricing-card featured">
-      <div class="featured-tag">Best Value</div>
+      <div class="featured-tag">Most Popular</div>
       <div class="plan-name">Quarterly</div>
-      <div class="plan-price"><sup>₹</sup>3300</div>
+      <div class="plan-price"><sup>₹</sup>2100</div>
       <div class="plan-period">per 3 months (save ₹300)</div>
       <ul class="plan-features">
         <li><span class="check">✓</span>Everything in Monthly</li>
@@ -681,12 +695,12 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
         <li><span class="check">✓</span>WhatsApp Support</li>
         <li><span class="check">✓</span>Dedicated Trainer Hour</li>
       </ul>
-      <button class="btn-primary" style="width:100%;" onclick="payNow(3300)">Get Started — ₹3300</button>
+      <button class="btn-primary" style="width:100%;" onclick="payNow(2100)">Get Started — ₹2100</button>
     </div>
     <div class="pricing-card">
       <div class="plan-name">Annual</div>
-      <div class="plan-price"><sup>₹</sup>12000</div>
-      <div class="plan-period">per year (save ₹2400)</div>
+      <div class="plan-price"><sup>₹</sup>7500</div>
+      <div class="plan-period">per year (save ₹2100)</div>
       <ul class="plan-features">
         <li><span class="check">✓</span>Everything in Quarterly</li>
         <li><span class="check">✓</span>Personal Training Included</li>
@@ -694,7 +708,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
         <li><span class="check">✓</span>Custom Diet Plan</li>
         <li><span class="check">✓</span>VIP Member Badge</li>
       </ul>
-      <button class="btn-primary" style="width:100%;" onclick="payNow(12000)">Get Started — ₹12000</button>
+      <button class="btn-primary" style="width:100%;" onclick="payNow(7500)">Get Started — ₹7500</button>
     </div>
   </div>
 </section>
@@ -707,30 +721,30 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <div class="trainers-grid">
     <div class="trainer-card">
       <div class="trainer-img-wrap">
-        <img src="trainer1.png" alt="Shivendra Dhakar" onerror="this.outerHTML='<div style=\'width:100%;height:240px;background:linear-gradient(160deg,#1a0800,#3d1200,#1a0800);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;\'><div style=\'width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff3c00,#a82500);display:flex;align-items:center;justify-content:center;font-size:38px;\'>👑</div><div style=\'font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:900;color:#ff3c00;text-transform:uppercase;letter-spacing:2px;\'>SHIVENDRA DHAKAR</div></div>'">
+        <img src="trainer1.png" alt="Shivendra Dhakar" onerror="this.outerHTML='<div style=\'width:100%;height:240px;background:linear-gradient(160deg,#1a0800,#3d1200,#1a0800);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;\'><div style=\'width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff3c00,#a82500);display:flex;align-items:center;justify-content:center;font-size:38px;\'>👑</div><div style=\'font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:900;color:#ff3c00;text-transform:uppercase;letter-spacing:2px;\'>GOVIND SHUKLA</div></div>'">
       </div>
       <div class="trainer-info">
         <div class="trainer-name">Shivendra Dhakar</div>
         <div class="trainer-role">Founder &amp; Head Coach</div>
-        <div class="trainer-bio">Passionate about strength training and building a community that uplifts every member at Dhairya Workout Zone.</div>
+        <div class="trainer-bio">Passionate about strength training and building a community that uplifts every member.</div>
         <div class="trainer-specialties"><span class="specialty-tag">Strength</span><span class="specialty-tag">Powerlifting</span><span class="specialty-tag">Nutrition</span></div>
       </div>
     </div>
     <div class="trainer-card">
-      <div class="trainer-img-wrap"><img src="https://images.unsplash.com/photo-1605296867424-35fc25c9212a?w=600&q=80" alt="Cardio Coach"></div>
+      <div class="trainer-img-wrap"><img loading="lazy" src="https://images.unsplash.com/photo-1605296867424-35fc25c9212a?w=600&q=80" alt="Rahul Singh"></div>
       <div class="trainer-info">
-        <div class="trainer-name">Fitness Coach</div>
+        <div class="trainer-name">Rahul Singh</div>
         <div class="trainer-role">Cardio &amp; Endurance Coach</div>
-        <div class="trainer-bio">Specializes in transforming stamina, burning fat, and building athletic endurance for every level.</div>
+        <div class="trainer-bio">Specializes in transforming stamina, burning fat, and building athletic endurance.</div>
         <div class="trainer-specialties"><span class="specialty-tag">Cardio</span><span class="specialty-tag">HIIT</span><span class="specialty-tag">Fat Loss</span></div>
       </div>
     </div>
     <div class="trainer-card">
-      <div class="trainer-img-wrap"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&q=80" alt="Diet Specialist"></div>
+      <div class="trainer-img-wrap"><img loading="lazy" src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&q=80" alt="Amit Yadav"></div>
       <div class="trainer-info">
-        <div class="trainer-name">Diet Specialist</div>
-        <div class="trainer-role">Wellness &amp; Nutrition Expert</div>
-        <div class="trainer-bio">Expert in crafting personalized diet plans that fuel performance and sustainable, long-term results.</div>
+        <div class="trainer-name">Amit Yadav</div>
+        <div class="trainer-role">Diet &amp; Wellness Specialist</div>
+        <div class="trainer-bio">Expert in crafting personalized diet plans that fuel performance and sustainable results.</div>
         <div class="trainer-specialties"><span class="specialty-tag">Diet Plans</span><span class="specialty-tag">Wellness</span><span class="specialty-tag">Recovery</span></div>
       </div>
     </div>
@@ -744,11 +758,11 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <p class="section-sub">State-of-the-art equipment, real people, real results.</p>
   <div class="gallery-grid">
     <div class="gallery-item gallery-item--overlay"><img src="hero.jpeg" alt="Gym floor" onerror="this.src='https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=90'"><div class="gallery-label">Main Floor</div></div>
-    <div class="gallery-item gallery-item--overlay"><img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=700&q=85" alt="Strength Training"><div class="gallery-label">Strength Zone</div></div>
-    <div class="gallery-item gallery-item--overlay"><img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=700&q=85" alt="Equipment"><div class="gallery-label">Free Weights</div></div>
-    <div class="gallery-item gallery-item--overlay"><img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=700&q=85" alt="Cardio"><div class="gallery-label">Cardio Area</div></div>
-    <div class="gallery-item gallery-item--overlay"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=700&q=85" alt="Coaching"><div class="gallery-label">Personal Training</div></div>
-    <div class="gallery-item gallery-item--overlay"><img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=700&q=85" alt="Members"><div class="gallery-label">Community</div></div>
+    <div class="gallery-item gallery-item--overlay"><img loading="lazy" src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=700&q=85" alt="Strength Training"><div class="gallery-label">Strength Zone</div></div>
+    <div class="gallery-item gallery-item--overlay"><img loading="lazy" src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=700&q=85" alt="Equipment"><div class="gallery-label">Free Weights</div></div>
+    <div class="gallery-item gallery-item--overlay"><img loading="lazy" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=700&q=85" alt="Cardio"><div class="gallery-label">Cardio Area</div></div>
+    <div class="gallery-item gallery-item--overlay"><img loading="lazy" src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=700&q=85" alt="Coaching"><div class="gallery-label">Personal Training</div></div>
+    <div class="gallery-item gallery-item--overlay"><img loading="lazy" src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=700&q=85" alt="Members"><div class="gallery-label">Community</div></div>
   </div>
 </section>
 
@@ -763,10 +777,13 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
       @dhairyaworkoutzone
     </a>
   </div>
-  <!-- Replace feed-id with your actual Behold widget ID once set up -->
-  <div style="text-align:center;padding:40px;background:var(--surface);border:1px solid var(--surface-border);border-radius:16px;">
-    <p style="color:var(--text-muted);font-size:14px;">📸 Follow us on Instagram <a href="https://instagram.com/dhairyaworkoutzone" target="_blank" style="color:var(--primary);">@dhairyaworkoutzone</a> for daily updates, transformations, and live session highlights.</p>
-  </div>
+  <behold-widget feed-id="yiKwwjeRtsNCDtEN5FwT"></behold-widget>
+  <script>
+    (() => {
+      const d=document,s=d.createElement("script");s.type="module";
+      s.src="https://w.behold.so/widget.js";d.head.append(s);
+    })();
+  </script>
 </section>
 
 <!-- FAQ -->
@@ -777,11 +794,11 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   </div>
   <div class="faq-list">
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What are the gym timings?<span class="faq-icon">+</span></button><div class="faq-a">Morning batch: 5:00 AM – 10:00 AM. Evening batch: 4:00 PM – 10:00 PM. Open 7 days a week including public holidays.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is personal training available?<span class="faq-icon">+</span></button><div class="faq-a">Yes! Personal training sessions are available for all members. Annual members get personal training sessions included in their plan.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is the gym truly unisex?<span class="faq-icon">+</span></button><div class="faq-a">Absolutely. We maintain a respectful, inclusive, and professional environment for everyone — men, women, and all fitness backgrounds are welcome at Dhairya Workout Zone.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What payment methods are accepted?<span class="faq-icon">+</span></button><div class="faq-a">We accept UPI payments (GPay, PhonePe, Paytm, etc.), cash, and online bank transfers. You can pay directly from this website using our QR code or UPI link.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Do you provide diet consultations?<span class="faq-icon">+</span></button><div class="faq-a">Yes! Diet support is included in all membership plans. Our specialist creates customized meal plans based on your goals and body type.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Where is the gym located?<span class="faq-icon">+</span></button><div class="faq-a">We're at Shri Bihari G Palace, Sector 7, Lohamandi, Agra, Uttar Pradesh 282007. Easy to find — just search "Dhairya Workout Zone" on Google Maps.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is personal training available?<span class="faq-icon">+</span></button><div class="faq-a">Yes! Personal training sessions are included for annual members. Monthly and quarterly members can book individual sessions at an additional fee.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is the gym truly unisex?<span class="faq-icon">+</span></button><div class="faq-a">Absolutely. We maintain a respectful, inclusive, and professional environment for everyone — men, women, and all fitness backgrounds are welcome.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What payment methods are accepted?<span class="faq-icon">+</span></button><div class="faq-a">We accept UPI payments (GPay, PhonePe, Paytm, etc.), cash, and online bank transfers. You can pay directly from this website using our QR code.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Do you provide diet consultations?<span class="faq-icon">+</span></button><div class="faq-a">Yes! Diet support is included in all membership plans. Our specialist Amit Yadav creates customized meal plans based on your goals and body type.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I pause or cancel my membership?<span class="faq-icon">+</span></button><div class="faq-a">Monthly plans can be cancelled any time. Quarterly and annual plans can be paused once for up to 15 days in case of illness or travel. Contact us to know more.</div></div>
   </div>
 </section>
 
@@ -791,12 +808,11 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <h2 class="section-title">Let's Talk Fitness</h2>
   <div class="contact-wrap">
     <div class="contact-info">
-      <div class="contact-detail"><div class="contact-icon">📞</div><div><div class="contact-label">Phone / WhatsApp</div><div class="contact-value"><a href="tel:+918979890960">+91 08979890960</a></div></div></div>
+      <div class="contact-detail"><div class="contact-icon">📞</div><div><div class="contact-label">Phone / WhatsApp</div><div class="contact-value"><a href="tel:+918979890960">+91 8979890960</a></div></div></div>
       <div class="contact-detail"><div class="contact-icon">📸</div><div><div class="contact-label">Instagram</div><div class="contact-value"><a href="https://instagram.com/dhairyaworkoutzone" target="_blank">@dhairyaworkoutzone</a></div></div></div>
       <div class="contact-detail"><div class="contact-icon">⏰</div><div><div class="contact-label">Hours</div><div class="contact-value">5–10 AM &amp; 4–10 PM, Daily</div></div></div>
-      <div class="contact-detail"><div class="contact-icon">📍</div><div><div class="contact-label">Address</div><div class="contact-value">Shri Bihari G Palace, Sector 7,<br>Lohamandi, Agra, UP 282007</div></div></div>
       <div class="contact-detail"><div class="contact-icon">💳</div><div><div class="contact-label">UPI ID</div><div class="contact-value">dhakarshivendra1@ibl</div></div></div>
-      <div style="margin-top:28px;"><button class="btn-primary" onclick="payNow(1200)">Pay ₹1200 Now</button></div>
+      <div style="margin-top:28px;"><button class="btn-primary" onclick="payNow(800)">Pay ₹800 Now</button></div>
     </div>
     <div class="contact-form">
       <h3>Send Enquiry</h3>
@@ -804,7 +820,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
         <div class="form-group"><label>Your Name</label><input id="name" type="text" placeholder="Rahul Kumar"></div>
         <div class="form-group"><label>Phone Number</label><input id="phone" type="tel" placeholder="+91 98765 43210"></div>
       </div>
-      <div class="form-group"><label>Interested In</label><select id="interest"><option value="Monthly Membership">Monthly Membership (₹1200)</option><option value="Quarterly Membership">Quarterly Membership (₹3300)</option><option value="Annual Membership">Annual Membership (₹12000)</option><option value="Personal Training">Personal Training</option><option value="General Enquiry">General Enquiry</option></select></div>
+      <div class="form-group"><label>Interested In</label><select id="interest"><option value="Monthly Membership">Monthly Membership (₹800)</option><option value="Quarterly Membership">Quarterly Membership (₹2100)</option><option value="Annual Membership">Annual Membership (₹7500)</option><option value="Personal Training">Personal Training</option><option value="General Enquiry">General Enquiry</option></select></div>
       <div class="form-group"><label>Message</label><textarea id="message" placeholder="Tell us about your fitness goals..."></textarea></div>
       <button class="btn-primary" style="width:100%;" onclick="submitEnquiry()">Send via WhatsApp</button>
     </div>
@@ -832,6 +848,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
           <div style="position:relative;width:100%;height:100%;">
             <iframe id="publicLiveFrame" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen allow="autoplay;encrypted-media"></iframe>
           </div>
+          <!-- Instagram live fallback (shown instead of iframe) -->
           <div id="publicIgFallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:30px;text-align:center;">
             <div style="font-size:52px;">📸</div>
             <div style="font-family:var(--font-display);font-size:22px;font-weight:900;text-transform:uppercase;">Instagram Live is On!</div>
@@ -871,11 +888,11 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
     <div class="map-info-card">
       <div class="map-info-row"><span class="map-info-icon">📍</span><div><div class="map-info-label">Address</div><div class="map-info-val">Dhairya Workout Zone<br>Shri Bihari G Palace, Sector 7<br>Lohamandi, Agra, UP 282007</div></div></div>
       <div class="map-info-row"><span class="map-info-icon">⏰</span><div><div class="map-info-label">Hours</div><div class="map-info-val">5:00 AM – 10:00 AM<br>4:00 PM – 10:00 PM</div></div></div>
-      <div class="map-info-row"><span class="map-info-icon">📞</span><div><div class="map-info-label">Phone</div><div class="map-info-val"><a href="tel:+918979890960" style="color:var(--primary);">+91 08979890960</a></div></div></div>
+      <div class="map-info-row"><span class="map-info-icon">📞</span><div><div class="map-info-label">Phone</div><div class="map-info-val"><a href="tel:+918979890960" style="color:var(--primary);">+91 8979890960</a></div></div></div>
       <a href="https://www.google.com/maps/dir/?api=1&destination=27.1958349,77.9629408" target="_blank" class="btn-primary" style="display:block;text-align:center;margin-top:20px;text-decoration:none;">🧭 Get Directions</a>
     </div>
     <div class="map-embed-wrap">
-      <div class="map-pin-label">📍 Dhairya Workout Zone — Sector 7, Lohamandi, Agra</div>
+      <div class="map-pin-label">📍 Dhairya Workout Zone — Agra, Uttar Pradesh</div>
       <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=77.9429408%2C27.1758349%2C77.9829408%2C27.2158349&layer=mapnik&marker=27.1958349%2C77.9629408" width="100%" height="380" style="border:0;border-radius:0 0 14px 14px;" allowfullscreen loading="lazy" title="Dhairya Workout Zone Location"></iframe>
     </div>
   </div>
@@ -914,7 +931,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <div class="footer-grid">
     <div class="footer-brand">
       <span class="logo">Dhairya<span>Workout Zone</span></span>
-      <p class="footer-desc">A premium unisex fitness destination in Agra built on discipline, community, and real transformation. Your best body starts here.</p>
+      <p class="footer-desc">A premium fitness destination built on discipline, community, and real transformation. Your best body starts here.</p>
       <div class="footer-social">
         <a href="https://instagram.com/dhairyaworkoutzone" target="_blank" class="social-btn">📸</a>
         <a href="https://wa.me/918979890960" target="_blank" class="social-btn">💬</a>
@@ -932,15 +949,15 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
     </div>
     <div class="footer-col">
       <h4>Membership</h4>
-      <a href="#pricing">Monthly — ₹1200</a>
-      <a href="#pricing">Quarterly — ₹3300</a>
-      <a href="#pricing">Annual — ₹12000</a>
+      <a href="#pricing">Monthly — ₹800</a>
+      <a href="#pricing">Quarterly — ₹2100</a>
+      <a href="#pricing">Annual — ₹7500</a>
       <a href="#contact">Personal Training</a>
     </div>
   </div>
   <div class="footer-bottom">
     <p>© 2025 Dhairya Workout Zone. All rights reserved.</p>
-    <p>Built with 💪 for Mr. Shivendra Dhakar</p>
+    <p>Designed with 💪 for Shivendra Dhakar</p>
   </div>
 </footer>
 
@@ -949,7 +966,7 @@ footer { position:relative;z-index:1;background:#07090d;border-top:1px solid var
   <div class="qr-box">
     <h3>Pay via UPI</h3>
     <p id="qrPlanLabel">Scan with any UPI app</p>
-    <div class="qr-amount" id="qrAmount">₹1200</div>
+    <div class="qr-amount" id="qrAmount">₹800</div>
     <div id="qrcode"></div>
     <p style="font-size:11px;color:var(--text-muted);margin-top:10px;">UPI ID: dhakarshivendra1@ibl</p>
     <div style="margin:12px 0 4px;padding:9px 12px;background:rgba(255,60,0,.08);border:1px solid rgba(255,60,0,.2);border-radius:8px;font-size:11px;color:var(--primary);">
@@ -975,8 +992,11 @@ document.querySelectorAll('a,button,.faq-q,.gallery-item').forEach(el=>{
   el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';cursorRing.style.width='36px';cursorRing.style.height='36px';});
 });
 
-// ─── THREE.JS BACKGROUND ──────────────────────────────────
-try {
+// ─── THREE.JS BACKGROUND (lazy — loads after page is interactive) ────────────
+window.addEventListener('load',function(){
+  var ts=document.createElement('script');
+  ts.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  ts.onload=function(){try {
   const scene=new THREE.Scene();
   const cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
   const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('bg'),alpha:true,antialias:true});
@@ -992,10 +1012,16 @@ try {
   document.addEventListener('mousemove',e=>{mx2=(e.clientX/innerWidth-.5)*.5;my2=(e.clientY/innerHeight-.5)*.5;});
   (function loop(){requestAnimationFrame(loop);pts.rotation.y+=0.0006;pts.rotation.x+=0.0002;pts.rotation.y+=(mx2-pts.rotation.y)*0.01;renderer.render(scene,cam);})();
   window.addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
-} catch(e){}
+  } catch(e){}};
+  document.head.appendChild(ts);
+  // QRCode lib — also lazy
+  var qs=document.createElement('script');
+  qs.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+  document.head.appendChild(qs);
+});
 
 // ─── HEADER SCROLL ────────────────────────────────────────
-window.addEventListener('scroll',()=>{document.getElementById('header').classList.toggle('scrolled',scrollY>60);});
+window.addEventListener('scroll',()=>{document.getElementById('header').classList.toggle('scrolled',scrollY>60);},{passive:true});
 
 // ─── SCROLL REVEAL ────────────────────────────────────────
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08});
@@ -1007,6 +1033,7 @@ function toggleMenu(){
   nav.classList.toggle('open');
   document.body.style.overflow=nav.classList.contains('open')?'hidden':'';
 }
+// Close on outside click
 document.getElementById('mobileNav').addEventListener('click',function(e){
   if(e.target===this) toggleMenu();
 });
@@ -1042,7 +1069,7 @@ function getLiveEmbedUrl(url) {
   const yt=url.match(/(?:youtube\.com\/live\/|youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
   if(yt) return 'https://www.youtube.com/embed/'+yt[1]+'?autoplay=1&rel=0';
   if(url.includes('facebook.com')||url.includes('fb.watch')) return 'https://www.facebook.com/plugins/video.php?href='+encodeURIComponent(url)+'&autoplay=1&show_text=0';
-  if(url.includes('instagram.com')) return null;
+  if(url.includes('instagram.com')) return null; // Instagram can't embed
   return url;
 }
 
@@ -1062,6 +1089,7 @@ function setLiveUI(data) {
     on.style.display = 'block';
     const embedUrl = getLiveEmbedUrl(data.url || '');
     if (embedUrl === null) {
+      // Instagram live
       frame.style.display = 'none';
       igFallback.style.display = 'flex';
       igFallback.style.flexDirection = 'column';
@@ -1093,12 +1121,11 @@ function setLiveUI(data) {
 
 // ─── PAYMENT ──────────────────────────────────────────────
 const PLAN_NAMES={1200:'Monthly Membership',3300:'Quarterly Membership',12000:'Annual Membership'};
-const UPI_BASE = 'upi://pay?pa=dhakarshivendra1@ibl&pn=Mr%20Shivendra%20Dhakar&mc=0000&mode=02&purpose=00';
-
+const UPI_BASE='upi://pay?pa=dhakarshivendra1@ibl&pn=Mr%20Shivendra%20Dhakar&mc=0000&mode=02&purpose=00';
 function payNow(amount){
   amount=amount||1200;
   const planName=PLAN_NAMES[amount]||'Gym Membership';
-  const upi = UPI_BASE + '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(planName);
+  const upi=UPI_BASE+'&am='+amount+'&cu=INR&tn='+encodeURIComponent(planName);
   if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
     window.location.href=upi;
   } else {
@@ -1107,12 +1134,12 @@ function payNow(amount){
     document.getElementById('qrPlanLabel').textContent=planName+' — Scan to pay';
     modal.classList.add('open');
     const qrEl=document.getElementById('qrcode');qrEl.innerHTML='';
-    new QRCode(qrEl,{text:upi,width:190,height:190,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+    function makeQR(){new QRCode(qrEl,{text:upi,width:190,height:190,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});}
+    if(typeof QRCode!=='undefined'){makeQR();}else{setTimeout(makeQR,1500);}
   }
 }
 function closeQR(){document.getElementById('qrModal').classList.remove('open');}
 document.getElementById('qrModal').addEventListener('click',function(e){if(e.target===this)closeQR();});
-
 // ─── SERVICE WORKER ───────────────────────────────────────
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js').catch(()=>{});
